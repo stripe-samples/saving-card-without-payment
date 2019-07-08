@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Stripe Payment Page Recipe</title>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="css/normalize.css" />
+    <link rel="stylesheet" href="css/global.css" />
+    <script src="https://js.stripe.com/v3/"></script>
+    <script src="/script.js" defer></script>
+  </head>
+  <body>
+    <div class="sr-root">
+      <div class="sr-main">
+        <header class="sr-header">
+          <div class="sr-header__logo"></div>
+        </header>
+        <div class="sr-payment-summary">
+          <h1>Link a card to your account</h1>
+          <h4>
+            You'll be able to use the card for your active subscriptions and
+            future purchases.
+          </h4>
+        </div>
+        <div class="sr-payment-form">
+          <form action="" method="get" id="payment-form">
+            <div class="sr-form-row">
+              <label for="card-element">
+                Default payment card
+              </label>
+              <div class="sr-input sr-card-element" id="card-element"></div>
+              <div class="sr-field-error" id="card-errors" role="alert"></div>
+            </div>
+            <div class="sr-form-row">
+              <button id="card-button">Link card to your account</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="sr-content">
+        <img src="pasha-card.svg" width="240" height="260" />
+      </div>
+    </div>
+  </body>
+</html>
