@@ -36,16 +36,31 @@ let stripeElements = function(setupIntent) {
   form.addEventListener("submit", function(event) {
     event.preventDefault();
     stripe
-      .handleCardSetup(setupIntent.client_secret, card, {
-        payment_method_data: {}
-      })
+      .handleCardSetup(setupIntent.client_secret, card)
       .then(function(result) {
         if (result.error) {
           var displayError = document.getElementById("card-errors");
           displayError.textContent = result.error.message;
         } else {
           console.log(result);
-          stripePaymentHandler();
+          fetch("/create-customer", {
+            method: "post",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(result.setupIntent)
+          })
+            .then(function(response) {
+              return response.json();
+            })
+            .then(function(customer) {
+              console.log(customer);
+              document.getElementById("endstate").style.display = "block";
+              document.getElementById("startstate").style.display = "none";
+              document.getElementById(
+                "setupIntent-response"
+              ).innerHTML = JSON.stringify(result.setupIntent, null, 2);
+            });
         }
       });
   });
@@ -53,11 +68,10 @@ let stripeElements = function(setupIntent) {
 
 function getSetupIntent() {
   return fetch("/create-setup-intent", {
-    method: "post",
+    method: "get",
     headers: {
       "Content-Type": "application/json"
-    },
-    body: JSON.stringify()
+    }
   })
     .then(function(response) {
       return response.json();
@@ -72,9 +86,3 @@ function getSetupIntent() {
 }
 
 getSetupIntent();
-
-// Implement logic to handle the users authorization for payment.
-// Here you will want to redirect to a successful payments page, or update the page.
-function stripePaymentHandler() {
-  //   window.location.replace("/endstate.html");
-}

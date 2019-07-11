@@ -12,7 +12,7 @@
   </head>
   <body>
     <div class="sr-root">
-      <div class="sr-main">
+      <div id="startstate" class="sr-main">
         <header class="sr-header">
           <div class="sr-header__logo"></div>
         </header>
@@ -36,6 +36,32 @@
               <button id="card-button">Link card to your account</button>
             </div>
           </form>
+        </div>
+      </div>
+      <div id="endstate" class="sr-main sr-endstate">
+        <header class="sr-header">
+          <div class="sr-header__logo"></div>
+        </header>
+        <div class="sr-payment-summary">
+          <h1>
+            Your card setup was successful.
+          </h1>
+          <h4>
+            A customer has been created with the payment method. View
+            <a
+              href="https://stripe.com/docs/payments/cards/saving-cards#submit-card-details"
+              >SetupIntent response</a
+            >
+          </h4>
+        </div>
+
+        <div class="sr-section">
+          <div class="sr-callout">
+            <pre id="setupIntent-response"></pre>
+          </div>
+          <button onclick="window.location.href='/'" class="fullwidth">
+            Restart demo
+          </button>
         </div>
       </div>
       <div class="sr-content">

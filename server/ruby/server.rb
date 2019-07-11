@@ -14,13 +14,21 @@ get '/' do
   send_file File.join(settings.public_folder, 'index.html')
 end
 
-post '/' do
+get '/create-setup-intent' do
+  content_type 'application/json'
+
+  data = Stripe::SetupIntent.create
+  data.to_json
+end
+
+post '/create-customer' do
   content_type 'application/json'
   data = JSON.parse request.body.read
 
-  {
-    data: data
-  }.to_json
+  # This creates a new Customer and attaches the PaymentMethod in one API call.
+  customer = Stripe::Customer.create(payment_method: data['payment_method'])
+
+  customer.to_json
 end
 
 post '/webhook' do
@@ -35,28 +43,36 @@ post '/webhook' do
   
     begin
       event = Stripe::Webhook.construct_event(
-          payload, sig_header, webhook_secret
+        payload, sig_header, webhook_secret
       )
     rescue JSON::ParserError => e
-        # Invalid payload
-        status 400
-        return
+      # Invalid payload
+      status 400
+      return
     rescue Stripe::SignatureVerificationError => e
-        # Invalid signature
-        puts "⚠️  Webhook signature verification failed."
-        status 400
-        return
+      # Invalid signature
+      puts "⚠️  Webhook signature verification failed."
+      status 400
+      return
     end
   else
     data = JSON.parse(payload, symbolize_names: true)
     event = Stripe::Event.construct_from(data)
   end
-  # Get the type of webhook event sent - used to check the status of PaymentIntents.    
+  # Get the type of webhook event sent - used to check the status of SetupIntents.    
   event_type = event['type']
   data = event['data']
   data_object = data['object']
 
-  if event_type == 'some.event'
+  if event_type == 'setup_intent.setup_failed'
+    puts "🔔  Webhook received!"
+  end
+
+  if event_type == 'setup_intent.succeeded'
+    puts "🔔  Webhook received!"
+  end
+
+  if event_type == 'setup_intent.created'
     puts "🔔  Webhook received!"
   end
 

@@ -423,3 +423,7 @@ pre {
     transform: scale(1);
   }
 }
+
+.sr-endstate {
+  display: none;
+}

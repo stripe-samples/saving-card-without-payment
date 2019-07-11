@@ -1,17 +1,22 @@
 package com.stripe.recipe;
 
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
 import static spark.Spark.get;
 import static spark.Spark.post;
+import static spark.Spark.staticFiles;
 
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
 import com.stripe.Stripe;
+import com.stripe.model.Customer;
 import com.stripe.model.Event;
+import com.stripe.model.SetupIntent;
 import com.stripe.exception.*;
+import com.stripe.net.ApiResource;
 import com.stripe.net.Webhook;
 
 public class Server {
@@ -29,24 +34,34 @@ public class Server {
     public static void main(String[] args) {
         Stripe.apiKey = System.getenv("STRIPE_SECRET_KEY");
 
+        staticFiles.externalLocation(
+                Paths.get(Paths.get("").toAbsolutePath().getParent().getParent().toString() + "/client")
+                        .toAbsolutePath().toString());
+
         get("/", (request, response) -> {
             response.type("application/json");
-
-            Map<String, Object> responseData = new HashMap<>();
-            responseData.put("some_key", "some_value");
-            return gson.toJson(responseData);
+            return "hello world";
         });
 
-        post("/post", (request, response) -> {
-            PostBody postBody = gson.fromJson(request.body(), PostBody.class);
-
+        get("/create-setup-intent", (request, response) -> {
             response.type("application/json");
-            System.out.println(postBody.getSomeField());
-            if (postBody.getSomeField().equals("something")) {
-                return "{\"data\": \"something \"}";
-            } else {
-                return "{\"data\": \"nothing \"}";
-            }
+
+            Map<String, Object> params = new HashMap<>();
+            SetupIntent setupIntent = SetupIntent.create(params);
+
+            return gson.toJson(setupIntent);
+        });
+
+        post("/create-customer", (request, response) -> {
+            response.type("application/json");
+
+            SetupIntent setupIntent = ApiResource.GSON.fromJson(request.body(), SetupIntent.class);
+            // This creates a new Customer and attaches the PaymentMethod in one API call.
+            // This creates a new Customer and attaches the PaymentMethod in one API call.
+            Map<String, Object> customerParams = new HashMap<String, Object>();
+            customerParams.put("payment_method", setupIntent.getPaymentMethod());
+            Customer customer = Customer.create(customerParams);
+            return customer.toJson();
         });
 
         post("/webhook", (request, response) -> {
@@ -66,7 +81,13 @@ public class Server {
             }
 
             switch (event.getType()) {
-            case "payment_intent.succeeded":
+            case "setup_intent.created":
+                System.out.println("Received event");
+                break;
+            case "setup_intent.succeeded":
+                System.out.println("Received event");
+                break;
+            case "setup_intent.setup_failed":
                 System.out.println("Received event");
                 break;
             default:

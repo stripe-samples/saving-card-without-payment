@@ -35,8 +35,19 @@ app.get("/public-key", (req, res) => {
   res.send({ publicKey: process.env.STRIPE_PUBLIC_KEY });
 });
 
-app.post("/create-setup-intent", async (req, res) => {
+app.get("/create-setup-intent", async (req, res) => {
   res.send(await stripe.setupIntents.create({}));
+});
+
+app.post("/create-customer", async (req, res) => {
+  // This creates a new Customer and attaches the PaymentMethod in one API call.
+  const customer = await stripe.customers.create({
+    payment_method: req.body.setupIntent.payment_method
+  });
+  // At this point, associate the ID of the Customer object with your
+  // own internal representation of a customer, if you have one.
+  console.log(customer);
+  res.send(customer);
 });
 
 // Webhook handler for asynchronous events.
@@ -69,7 +80,15 @@ app.post("/webhook", async (req, res) => {
     eventType = req.body.type;
   }
 
-  if (eventType === "some.event") {
+  if (eventType === "setup_intent.setup_failed") {
+    console.log(`🔔  Webhook received! ${data} succeeded.`);
+  }
+
+  if (eventType === "setup_intent.succeeded") {
+    console.log(`🔔  Webhook received! ${data} succeeded.`);
+  }
+
+  if (eventType === "setup_intent.created") {
     console.log(`🔔  Webhook received! ${data} succeeded.`);
   }
 

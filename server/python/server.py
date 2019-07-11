@@ -14,25 +14,41 @@ from flask import Flask, render_template, jsonify, request, send_from_directory
 from dotenv import load_dotenv, find_dotenv
 
 static_dir = f'{os.path.abspath(os.path.join(__file__ ,"../../../client"))}'
-app = Flask(__name__, static_folder=static_dir, static_url_path="", template_folder=static_dir)
+app = Flask(__name__, static_folder=static_dir,
+            static_url_path="", template_folder=static_dir)
 
 # Setup Stripe python client library
 load_dotenv(find_dotenv())
 stripe.api_key = os.getenv('STRIPE_SECRET_KEY')
 stripe.api_version = os.getenv('STRIPE_API_VERSION')
 
+
 @app.route('/', methods=['GET'])
-def get_example():
+def get_setup_intent_page():
     return render_template('index.html')
 
-@app.route('/', methods=['POST'])
-def post_example():
+
+@app.route('/create-setup-intent', methods=['GET'])
+def get_setup_intent():
+    setup_intent = stripe.SetupIntent.create()
+    return jsonify(setup_intent)
+
+
+@app.route('/create-customer', methods=['POST'])
+def create_customer():
     # Reads application/json and returns a response
     data = json.loads(request.data)
     try:
-        return jsonify({'data': data})
+        # This creates a new Customer and attaches the PaymentMethod in one API call.
+        customer = stripe.Customer.create(
+            payment_method=data['setupIntent']['payment_method'])
+        # At this point, associate the ID of the Customer object with your
+        # own internal representation of a customer, if you have one.
+        print(customer)
+        return jsonify(customer)
     except Exception as e:
         return jsonify(e), 403
+
 
 @app.route('/webhook', methods=['POST'])
 def webhook_received():
@@ -56,14 +72,20 @@ def webhook_received():
         data = request_data['data']
         event_type = request_data['type']
     data_object = data['object']
-    
+
     print('event ' + event_type)
 
-    if event_type == 'some.event':
+    if event_type == 'setup_intent.created':
+        print('🔔Webhook received!')
+
+    if event_type == 'setup_intent.succeeded':
+        print('🔔Webhook received!')
+
+    if event_type == 'setup_intent.setup_failed':
         print('🔔Webhook received!')
 
     return jsonify({'status': 'success'})
 
 
-if __name__== '__main__':
-    app.run(port=4242)
+if __name__ == '__main__':
+    app.run(host="localhost", port=4242, debug=True)
