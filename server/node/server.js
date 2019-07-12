@@ -23,26 +23,18 @@ app.get("/", (req, res) => {
   res.sendFile(path);
 });
 
-app.post("/", async (req, res) => {
-  const { data } = req.body;
-
-  res.send({
-    someData: data
-  });
-});
-
 app.get("/public-key", (req, res) => {
   res.send({ publicKey: process.env.STRIPE_PUBLIC_KEY });
 });
 
 app.get("/create-setup-intent", async (req, res) => {
-  res.send(await stripe.setupIntents.create({}));
+  res.send(await stripe.setupIntents.create());
 });
 
 app.post("/create-customer", async (req, res) => {
   // This creates a new Customer and attaches the PaymentMethod in one API call.
   const customer = await stripe.customers.create({
-    payment_method: req.body.setupIntent.payment_method
+    payment_method: req.body.payment_method
   });
   // At this point, associate the ID of the Customer object with your
   // own internal representation of a customer, if you have one.

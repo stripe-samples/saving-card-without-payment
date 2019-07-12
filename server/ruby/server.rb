@@ -14,6 +14,14 @@ get '/' do
   send_file File.join(settings.public_folder, 'index.html')
 end
 
+get '/public-key' do
+  content_type 'application/json'
+
+  {
+    'publicKey': ENV['STRIPE_PUBLIC_KEY']
+  }.to_json
+end
+
 get '/create-setup-intent' do
   content_type 'application/json'
 

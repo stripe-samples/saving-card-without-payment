@@ -1,5 +1,5 @@
-let stripeElements = function(setupIntent) {
-  var stripe = Stripe("pk_test_4wpDbRpfgtxLW0JHXwHPnC7n00M0KnKoYv");
+let stripeElements = function(publicKey, setupIntent) {
+  var stripe = Stripe(publicKey);
   var elements = stripe.elements();
 
   // Element styles
@@ -66,7 +66,7 @@ let stripeElements = function(setupIntent) {
   });
 };
 
-function getSetupIntent() {
+function getSetupIntent(publicKey) {
   return fetch("/create-setup-intent", {
     method: "get",
     headers: {
@@ -81,8 +81,24 @@ function getSetupIntent() {
       document
         .getElementById("card-button")
         .setAttribute("data-secret", setupIntent.client_secret);
-      stripeElements(setupIntent);
+      stripeElements(publicKey, setupIntent);
     });
 }
 
-getSetupIntent();
+function getPublicKey() {
+  return fetch("/public-key", {
+    method: "get",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  })
+    .then(function(response) {
+      return response.json();
+    })
+    .then(function(response) {
+      console.log(response);
+      getSetupIntent(response.publicKey);
+    });
+}
+
+getPublicKey();

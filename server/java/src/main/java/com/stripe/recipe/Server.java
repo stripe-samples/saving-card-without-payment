@@ -9,6 +9,7 @@ import static spark.Spark.post;
 import static spark.Spark.staticFiles;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 
 import com.stripe.Stripe;
@@ -41,6 +42,13 @@ public class Server {
         get("/", (request, response) -> {
             response.type("application/json");
             return "hello world";
+        });
+
+        get("/public-key", (request, response) -> {
+            response.type("application/json");
+            JsonObject publiKey = new JsonObject();
+            publiKey.addProperty("publicKey", System.getenv("STRIPE_PUBLIC_KEY"));
+            return publiKey.toString();
         });
 
         get("/create-setup-intent", (request, response) -> {

@@ -28,6 +28,11 @@ def get_setup_intent_page():
     return render_template('index.html')
 
 
+@app.route('/public-key', methods=['GET'])
+def get_public_key():
+    return jsonify(publicKey=os.getenv('STRIPE_PUBLIC_KEY'))
+
+
 @app.route('/create-setup-intent', methods=['GET'])
 def get_setup_intent():
     setup_intent = stripe.SetupIntent.create()
@@ -41,7 +46,7 @@ def create_customer():
     try:
         # This creates a new Customer and attaches the PaymentMethod in one API call.
         customer = stripe.Customer.create(
-            payment_method=data['setupIntent']['payment_method'])
+            payment_method=data['payment_method'])
         # At this point, associate the ID of the Customer object with your
         # own internal representation of a customer, if you have one.
         print(customer)
