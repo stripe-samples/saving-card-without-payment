@@ -1,9 +1,9 @@
-# Name of recipe
+# Saving cards without payment
 
 ## Requirements
-* Python 3 (TODO: Make this run with Python 2.7)
-* [Configured .env file](../README.md)
 
+- Python 3 (TODO: Make this run with Python 2.7)
+- [Configured .env file](../README.md)
 
 ## How to run
 
@@ -13,6 +13,7 @@
 python3 -m venv /path/to/new/virtual/environment
 source /path/to/new/virtual/environment/venv/bin/activate
 ```
+
 2. Install dependencies
 
 ```

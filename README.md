@@ -1,35 +1,17 @@
-# Stripe Recipe Blueprint
-This is a repo to help you get started with creating a recipe. 
+# Saving cards without payment sample
 
-1. Clone this repository and add the recipe specific logic. 
-```
-git clone https://git.corp.stripe.com/adreyfus/stripe-recipe-template
-```
+This sample shows how to build a form to save a credit card without taking a payment using the [Setup Intents API](https://stripe.com/docs/api/setup_intents). This sample
+is a fully working version of [this guide](https://stripe.com/docs/payments/cards/saving-cards#saving-card-without-payment).
 
-2. Language specific instructions: 
-    - Update the Java artifactId to use a specific recipe related name. Update the README with the right package name.
+See a hosted version of the demo in test mode or fork on codesandbox.io
 
-3. Update the sample recipe README below and delete this boilerplate text.
-
-4. Instructions on hosting TBD.
-
-Below is everything you should include in your original recipe README. Everything above should be deleted.
-
-# Name of recipe
-A brief description of what this recipe shows. Keep it 3 - 5 sentences.
-
-A quick screenshot of the demo view:
-<img src="https://cf.ltkcdn.net/dogs/images/std/236742-699x450-cutest-puppy-videos.jpg" alt="Preview of recipe" align="center">
-
-Features:
-* One cool thing about this recipe 😃
-* Another cool thing about the recipe 🏋️
-* The final cool thing about the recipe 💡
+<img src="./saving-card-without-payment.png" alt="Credit card details page" align="center">
 
 ## How to run locally
-This recipe includes [6 server implementations](server/README.md) in our most popular languages. 
 
-If you want to run the recipe locally, copy the .env.example file to your own .env file in this directory: 
+Each sample implementation includes 5 servers in Node, Ruby, Python, Java, and PHP in the /server/ directory.
+
+If you want to run the sample locally, copy the .env.example file to your own .env file in this directory and follow the instructions in the specific server implementation you want to run.
 
 ```
 cp .env.example .env
@@ -38,6 +20,7 @@ cp .env.example .env
 You will need a Stripe account with its own set of [API keys](https://stripe.com/docs/development#api-keys).
 
 ## FAQ
+
 Q: Why did you pick these frameworks?
 
 A: We chose the most minimal framework to convey the key Stripe calls and concepts you need to understand. These demos are meant as an educational tool that helps you roadmap how to integrate Stripe within your own system independent of the framework.
@@ -47,4 +30,5 @@ Q: Can you show me how to build X?
 A: We are always looking for new recipe ideas, please email tbd@stripe.com with your suggestion!
 
 ## Author(s)
-[@adreyfus-stripe](https://twitter.com/adrind)
+
+[@ctrudeau-stripe](https://twitter.com/trudeaucj)
