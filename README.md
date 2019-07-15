@@ -20,7 +20,7 @@ cp .env.example .env
 
 You will need a Stripe account with its own set of [API keys](https://stripe.com/docs/development#api-keys).
 
-# Supported languages
+### Supported languages
 
 - [JavaScript (Node)](/server/node)
 - [Python (Flask)](/server/python)
