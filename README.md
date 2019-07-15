@@ -9,7 +9,8 @@ See a hosted version of the demo in test mode or fork on codesandbox.io
 
 ## How to run locally
 
-Each sample implementation includes 5 servers in Node, Ruby, Python, Java, and PHP in the /server/ directory.
+Each sample implementation includes 5 servers in Node, Ruby, Python, Java, and PHP in the [/server](/server) directory. We included several RESTful server that each implement the same endpoints and logic.
+Pick the language you are most comfortable in and follow the instructions in the directory on how to run.
 
 If you want to run the sample locally, copy the .env.example file to your own .env file in this directory and follow the instructions in the specific server implementation you want to run.
 
@@ -18,6 +19,14 @@ cp .env.example .env
 ```
 
 You will need a Stripe account with its own set of [API keys](https://stripe.com/docs/development#api-keys).
+
+# Supported languages
+
+- [JavaScript (Node)](/server/node/README.md)
+- [Python (Flask)](/server/python/README.md)
+- [Ruby (Sinatra)](/server/ruby/README.md)
+- [PHP (Slim)](/server/php/README.md)
+- [Java (Spark)](/server/java/README.md)
 
 ## FAQ
 
