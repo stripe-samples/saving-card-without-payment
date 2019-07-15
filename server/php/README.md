@@ -12,11 +12,11 @@
 2. Run composer to set up dependencies
 
 ```
-php composer.json install
+composer install
 ```
 
 3. Run the server locally
 
 ```
-php -S localhost:8080
+composer start
 ```
