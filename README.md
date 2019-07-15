@@ -22,11 +22,11 @@ You will need a Stripe account with its own set of [API keys](https://stripe.com
 
 # Supported languages
 
-- [JavaScript (Node)](/server/node/README.md)
-- [Python (Flask)](/server/python/README.md)
-- [Ruby (Sinatra)](/server/ruby/README.md)
-- [PHP (Slim)](/server/php/README.md)
-- [Java (Spark)](/server/java/README.md)
+- [JavaScript (Node)](/server/node)
+- [Python (Flask)](/server/python)
+- [Ruby (Sinatra)](/server/ruby)
+- [PHP (Slim)](/server/php)
+- [Java (Spark)](/server/java)
 
 ## FAQ
 
