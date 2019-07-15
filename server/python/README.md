@@ -1,8 +1,8 @@
-# Saving cards without payment
+# Name of sample
 
 ## Requirements
 
-- Python 3 (TODO: Make this run with Python 2.7)
+- Python 3
 - [Configured .env file](../README.md)
 
 ## How to run
@@ -20,9 +20,11 @@ source /path/to/new/virtual/environment/venv/bin/activate
 pip install -r requirements.txt
 ```
 
-3. Export and run the server locally
+3. Export and run the application
 
 ```
 export FLASK_APP=server.py
-python3 -m flask run
+python3 -m flask run --port=4242
 ```
+
+4. Go to `localhost:4242` in your browser to see the demo

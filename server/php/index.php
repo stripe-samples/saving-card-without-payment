@@ -65,6 +65,9 @@ $app->post('/create-setup-intent', function (Request $request, Response $respons
 $app->post('/create-customer', function (Request $request, Response $response, array $args) {  
   $body = json_decode($request->getBody());
   
+  # This creates a new Customer and attaches the PaymentMethod in one API call.
+  # At this point, associate the ID of the Customer object with your
+  # own internal representation of a customer, if you have one. 
   $customer = \Stripe\Customer::create([
     "payment_method" => $body->payment_method
   ]);

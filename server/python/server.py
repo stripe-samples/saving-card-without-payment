@@ -34,7 +34,7 @@ def get_public_key():
 
 
 @app.route('/create-setup-intent', methods=['POST'])
-def get_setup_intent():
+def create_setup_intent():
     setup_intent = stripe.SetupIntent.create()
     return jsonify(setup_intent)
 
@@ -77,8 +77,6 @@ def webhook_received():
         data = request_data['data']
         event_type = request_data['type']
     data_object = data['object']
-
-    print('event ' + event_type)
 
     if event_type == 'setup_intent.created':
         print('🔔 Occurs when a new SetupIntent is created.')

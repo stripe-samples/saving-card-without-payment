@@ -92,6 +92,14 @@ h4 {
   margin-top: 12px;
 }
 
+.sr-field-error {
+  color: var(--accent-color);
+  text-align: left;
+  font-size: 13px;
+  line-height: 17px;
+  margin-top: 12px;
+}
+
 /* Form */
 .sr-form-row {
   margin: 16px 0;

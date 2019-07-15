@@ -34,6 +34,8 @@ post '/create-customer' do
   data = JSON.parse request.body.read
 
   # This creates a new Customer and attaches the PaymentMethod in one API call.
+  # At this point, associate the ID of the Customer object with your
+  # own internal representation of a customer, if you have one. 
   customer = Stripe::Customer.create(payment_method: data['payment_method'])
 
   customer.to_json
