@@ -1,4 +1,4 @@
-let stripeElements = function(publicKey, setupIntent) {
+var stripeElements = function(publicKey, setupIntent) {
   var stripe = Stripe(publicKey);
   var elements = stripe.elements();
 
@@ -42,7 +42,6 @@ let stripeElements = function(publicKey, setupIntent) {
           var displayError = document.getElementById("card-errors");
           displayError.textContent = result.error.message;
         } else {
-          console.log(result);
           fetch("/create-customer", {
             method: "post",
             headers: {
@@ -54,7 +53,6 @@ let stripeElements = function(publicKey, setupIntent) {
               return response.json();
             })
             .then(function(customer) {
-              console.log(customer);
               document.getElementById("endstate").style.display = "block";
               document.getElementById("startstate").style.display = "none";
               document.getElementById(
@@ -68,7 +66,7 @@ let stripeElements = function(publicKey, setupIntent) {
 
 function getSetupIntent(publicKey) {
   return fetch("/create-setup-intent", {
-    method: "get",
+    method: "post",
     headers: {
       "Content-Type": "application/json"
     }
@@ -77,10 +75,6 @@ function getSetupIntent(publicKey) {
       return response.json();
     })
     .then(function(setupIntent) {
-      console.log(setupIntent);
-      document
-        .getElementById("card-button")
-        .setAttribute("data-secret", setupIntent.client_secret);
       stripeElements(publicKey, setupIntent);
     });
 }
@@ -96,7 +90,6 @@ function getPublicKey() {
       return response.json();
     })
     .then(function(response) {
-      console.log(response);
       getSetupIntent(response.publicKey);
     });
 }

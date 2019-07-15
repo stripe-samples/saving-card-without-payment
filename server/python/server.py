@@ -33,7 +33,7 @@ def get_public_key():
     return jsonify(publicKey=os.getenv('STRIPE_PUBLIC_KEY'))
 
 
-@app.route('/create-setup-intent', methods=['GET'])
+@app.route('/create-setup-intent', methods=['POST'])
 def get_setup_intent():
     setup_intent = stripe.SetupIntent.create()
     return jsonify(setup_intent)
@@ -81,13 +81,14 @@ def webhook_received():
     print('event ' + event_type)
 
     if event_type == 'setup_intent.created':
-        print('🔔Webhook received!')
+        print('🔔 Occurs when a new SetupIntent is created.')
 
     if event_type == 'setup_intent.succeeded':
-        print('🔔Webhook received!')
+        print('🔔 Occurs when an SetupIntent has successfully setup a payment method.')
 
     if event_type == 'setup_intent.setup_failed':
-        print('🔔Webhook received!')
+        print(
+            '🔔 Occurs when a SetupIntent has failed the attempt to setup a payment method.')
 
     return jsonify({'status': 'success'})
 

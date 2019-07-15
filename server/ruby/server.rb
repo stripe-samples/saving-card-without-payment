@@ -22,7 +22,7 @@ get '/public-key' do
   }.to_json
 end
 
-get '/create-setup-intent' do
+post '/create-setup-intent' do
   content_type 'application/json'
 
   data = Stripe::SetupIntent.create
@@ -73,15 +73,15 @@ post '/webhook' do
   data_object = data['object']
 
   if event_type == 'setup_intent.setup_failed'
-    puts "🔔  Webhook received!"
+    puts "🔔  Occurs when a SetupIntent has failed the attempt to setup a payment method."
   end
 
   if event_type == 'setup_intent.succeeded'
-    puts "🔔  Webhook received!"
+    puts "🔔 Occurs when an SetupIntent has successfully setup a payment method."
   end
 
   if event_type == 'setup_intent.created'
-    puts "🔔  Webhook received!"
+    puts "🔔 Occurs when a new SetupIntent is created."
   end
 
   content_type 'application/json'

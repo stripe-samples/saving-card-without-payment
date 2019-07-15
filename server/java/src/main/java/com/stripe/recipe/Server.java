@@ -24,15 +24,6 @@ import com.stripe.net.Webhook;
 public class Server {
     private static Gson gson = new Gson();
 
-    static class PostBody {
-        @SerializedName("some_field")
-        String someField;
-
-        public String getSomeField() {
-            return someField;
-        }
-    }
-
     public static void main(String[] args) {
         port(4242);
         Stripe.apiKey = System.getenv("STRIPE_SECRET_KEY");
@@ -41,19 +32,14 @@ public class Server {
                 Paths.get(Paths.get("").toAbsolutePath().getParent().getParent().toString() + "/client")
                         .toAbsolutePath().toString());
 
-        get("/", (request, response) -> {
-            response.type("application/json");
-            return "hello world";
-        });
-
         get("/public-key", (request, response) -> {
             response.type("application/json");
-            JsonObject publiKey = new JsonObject();
-            publiKey.addProperty("publicKey", System.getenv("STRIPE_PUBLIC_KEY"));
-            return publiKey.toString();
+            JsonObject publicKey = new JsonObject();
+            publicKey.addProperty("publicKey", System.getenv("STRIPE_PUBLIC_KEY"));
+            return publicKey.toString();
         });
 
-        get("/create-setup-intent", (request, response) -> {
+        post("/create-setup-intent", (request, response) -> {
             response.type("application/json");
 
             Map<String, Object> params = new HashMap<>();
@@ -67,7 +53,6 @@ public class Server {
 
             SetupIntent setupIntent = ApiResource.GSON.fromJson(request.body(), SetupIntent.class);
             // This creates a new Customer and attaches the PaymentMethod in one API call.
-            // This creates a new Customer and attaches the PaymentMethod in one API call.
             Map<String, Object> customerParams = new HashMap<String, Object>();
             customerParams.put("payment_method", setupIntent.getPaymentMethod());
             Customer customer = Customer.create(customerParams);
@@ -75,7 +60,6 @@ public class Server {
         });
 
         post("/webhook", (request, response) -> {
-            System.out.println("Webhook");
             String payload = request.body();
             String sigHeader = request.headers("Stripe-Signature");
             String endpointSecret = System.getenv("STRIPE_WEBHOOK_SECRET");
@@ -92,13 +76,13 @@ public class Server {
 
             switch (event.getType()) {
             case "setup_intent.created":
-                System.out.println("Received event");
+                System.out.println("Occurs when a new SetupIntent is created.");
                 break;
             case "setup_intent.succeeded":
-                System.out.println("Received event");
+                System.out.println("Occurs when an SetupIntent has successfully setup a payment method.");
                 break;
             case "setup_intent.setup_failed":
-                System.out.println("Received event");
+                System.out.println("Occurs when a SetupIntent has failed the attempt to setup a payment method.");
                 break;
             default:
                 // Unexpected event type
