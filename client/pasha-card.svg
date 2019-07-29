@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="259px" height="249px" viewBox="0 0 259 249" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 55.2 (78181) - https://sketchapp.com -->
+    <title>illustration-save-card</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <radialGradient cx="110.520087%" cy="69.8824294%" fx="110.520087%" fy="69.8824294%" r="194.161009%" gradientTransform="translate(1.105201,0.698824),scale(0.769231,1.000000),rotate(-163.957407),translate(-1.105201,-0.698824)" id="radialGradient-1">
+            <stop stop-color="#ED9B5F" offset="0%"></stop>
+            <stop stop-color="#ED5FD4" offset="100%"></stop>
+        </radialGradient>
+        <circle id="path-2" cx="199.5" cy="174.5" r="25.5"></circle>
+        <filter x="-117.6%" y="-88.2%" width="335.3%" height="335.3%" filterUnits="objectBoundingBox" id="filter-3">
+            <feOffset dx="0" dy="5" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="7.5" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.07 0" type="matrix" in="shadowBlurOuter1" result="shadowMatrixOuter1"></feColorMatrix>
+            <feOffset dx="0" dy="15" in="SourceAlpha" result="shadowOffsetOuter2"></feOffset>
+            <feGaussianBlur stdDeviation="17.5" in="shadowOffsetOuter2" result="shadowBlurOuter2"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0.196078431   0 0 0 0 0.196078431   0 0 0 0 0.364705882  0 0 0 0.1 0" type="matrix" in="shadowBlurOuter2" result="shadowMatrixOuter2"></feColorMatrix>
+            <feMerge>
+                <feMergeNode in="shadowMatrixOuter1"></feMergeNode>
+                <feMergeNode in="shadowMatrixOuter2"></feMergeNode>
+            </feMerge>
+        </filter>
+        <path d="M7.1671031,18.9767851 L7.1671031,14.9632895 C7.1671031,14.168674 7.81069377,13.5245109 8.6046031,13.5245109 C9.39851243,13.5245109 10.0421031,14.168674 10.0421031,14.9632895 L10.0421031,21.5612213 C10.0421031,21.9294369 9.90175843,22.2976525 9.6210691,22.5785915 C9.34037976,22.8595305 8.97249143,23 8.6046031,23 L2.0125351,23 C1.21862577,23 0.575035095,22.3558368 0.575035095,21.5612213 C0.575035095,20.7666058 1.21862577,20.1224426 2.0125351,20.1224426 L3.86814851,20.1224426 C1.45918723,17.9831432 0,14.8786579 0,11.5102295 C0,6.37363951 3.37520682,1.90567296 8.21713349,0.471704025 C8.97841574,0.246245202 9.77816498,0.681164866 10.0034234,1.44312428 C10.2286819,2.2050837 9.79414875,3.00554434 9.03286651,3.23100316 C5.40574114,4.30520058 2.875,7.65529654 2.875,11.5102295 C2.875,14.6323034 4.54541715,17.4512459 7.1671031,18.9767851 Z M15.8332732,4.02321487 L15.8332732,8.03671046 C15.8332732,8.83132599 15.1896825,9.47548915 14.3957732,9.47548915 C13.6018639,9.47548915 12.9582732,8.83132599 12.9582732,8.03671046 L12.9582732,1.43877868 C12.9582732,1.07056311 13.0986179,0.702347533 13.3793072,0.42140852 C13.6599965,0.140469507 14.0278849,1.77635684e-15 14.3957732,1.77635684e-15 L20.9878412,1.77635684e-15 C21.7817505,1.77635684e-15 22.4253412,0.644163159 22.4253412,1.43877868 C22.4253412,2.23339421 21.7817505,2.87755737 20.9878412,2.87755737 L19.1322278,2.87755737 C21.5411891,5.01685676 23.0003763,8.1213421 23.0003763,11.4897705 C23.0003763,16.6263605 19.6251695,21.094327 14.7832428,22.528296 C14.0219605,22.7537548 13.2222113,22.3188351 12.9969528,21.5568757 C12.7716944,20.7949163 13.2062275,19.9944557 13.9675098,19.7689968 C17.5946351,18.6947994 20.1253763,15.3447035 20.1253763,11.4897705 C20.1253763,8.36769659 18.4549591,5.54875413 15.8332732,4.02321487 Z" id="path-4"></path>
+    </defs>
+    <g id="Recipes-Framework" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="save-without-pay" transform="translate(-360.000000, -91.000000)">
+            <g id="illustration-save-card" transform="translate(360.000000, 91.000000)">
+                <path d="M76.4221915,178 C63.5837937,178 57,171.415961 57,158.580411 L57,87.4860943 C57,74.5840387 63.5837937,68 76.4221915,68 L180.577808,68 C193.416206,68 200,74.6505441 200,87.4860943 L200,158.580411 C200,171.349456 193.416206,178 180.577808,178 L76.4221915,178 Z M64,86.6666667 L64,92 L193,92 L193,86.6666667 C193,79 188.775988,75 181.33368,75 L75.6663202,75 C68.0899168,75 64,79 64,86.6666667 Z M75.6663202,170 L181.33368,170 C188.775988,170 193,165.990291 193,158.106796 L193,107 L64,107 L64,158.106796 C64,165.990291 68.0899168,170 75.6663202,170 Z M83.719457,149 C79.7149321,149 77,146.241379 77,142.37931 L77,129.551724 C77,125.689655 79.7149321,123 83.719457,123 L100.348416,123 C104.285068,123 107,125.689655 107,129.551724 L107,142.37931 C107,146.241379 104.285068,149 100.348416,149 L83.719457,149 Z" id="card" fill="url(#radialGradient-1)" fill-rule="nonzero"></path>
+                <g id="Oval">
+                    <use fill="black" fill-opacity="1" filter="url(#filter-3)" xlink:href="#path-2"></use>
+                    <use fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-2"></use>
+                </g>
+                <g id="Icon/change" transform="translate(189.000000, 163.000000)">
+                    <mask id="mask-5" fill="white">
+                        <use xlink:href="#path-4"></use>
+                    </mask>
+                    <use id="Mask" fill="#FA9BA9" fill-rule="nonzero" xlink:href="#path-4"></use>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
