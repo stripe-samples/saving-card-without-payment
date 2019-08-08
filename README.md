@@ -9,7 +9,7 @@ See a hosted version of the [demo](https://3icf8.sse.codesandbox.io/) in test mo
 
 ## How to run locally
 
-Each sample implementation includes 5 servers in Node, Ruby, Python, Java, and PHP in the [/server](/server) directory. We included several RESTful server that each implement the same endpoints and logic.
+This sample implementation includes 5 servers in Node, Ruby, Python, Java, and PHP in the [/server](/server) directory. We included several RESTful server implementations, each with the same endpoints and logic.
 Pick the language you are most comfortable in and follow the instructions in the directory on how to run.
 
 If you want to run the sample locally, copy the .env.example file to your own .env file in this directory and follow the instructions in the specific server implementation you want to run.
@@ -36,7 +36,7 @@ A: We chose the most minimal framework to convey the key Stripe calls and concep
 
 Q: Can you show me how to build X?
 
-A: We are always looking for new recipe ideas, please email tbd@stripe.com with your suggestion!
+A: We are always looking for new recipe ideas, please email dev-samples@stripe.com with your suggestion!
 
 ## Author(s)
 
