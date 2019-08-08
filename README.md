@@ -3,7 +3,7 @@
 This sample shows how to build a form to save a credit card without taking a payment using the [Setup Intents API](https://stripe.com/docs/api/setup_intents). This sample
 is a fully working version of [this guide](https://stripe.com/docs/payments/cards/saving-cards#saving-card-without-payment).
 
-See a hosted version of the [demo](https://3icf8.sse.codesandbox.io/) in test mode or [fork on codesandbox.io](https://codesandbox.io/s/stripe-saving-card-without-payment-3icf8)
+See a hosted version of the [demo](https://q0sh7.sse.codesandbox.io/) in test mode or [fork on codesandbox.io](https://codesandbox.io/s/stripe-saving-card-without-payment-q0sh7)
 
 <img src="./saving-card-without-payment.png" alt="Credit card details page" align="center">
 
