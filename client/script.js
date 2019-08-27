@@ -35,10 +35,12 @@ var stripeElements = function(publicKey, setupIntent) {
   var form = document.getElementById("payment-form");
   form.addEventListener("submit", function(event) {
     event.preventDefault();
+    changeLoadingState(true);
     stripe
       .handleCardSetup(setupIntent.client_secret, card)
       .then(function(result) {
         if (result.error) {
+          changeLoadingState(false);
           var displayError = document.getElementById("card-errors");
           displayError.textContent = result.error.message;
         } else {
@@ -53,6 +55,7 @@ var stripeElements = function(publicKey, setupIntent) {
               return response.json();
             })
             .then(function(customer) {
+              changeLoadingState(false);
               document.getElementById("endstate").style.display = "block";
               document.getElementById("startstate").style.display = "none";
               document.getElementById(
@@ -92,6 +95,19 @@ function getPublicKey() {
     .then(function(response) {
       getSetupIntent(response.publicKey);
     });
+}
+
+// Show a spinner on payment submission
+function changeLoadingState(isLoading) {
+  if (isLoading) {
+    document.querySelector("button").disabled = true;
+    document.querySelector("#spinner").classList.remove("hidden");
+    document.querySelector("#button-text").classList.add("hidden");
+  } else {
+    document.querySelector("button").disabled = false;
+    document.querySelector("#spinner").classList.add("hidden");
+    document.querySelector("#button-text").classList.remove("hidden");
+  }
 }
 
 getPublicKey();
