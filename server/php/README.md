@@ -18,5 +18,5 @@ composer install
 3. Run the server locally
 
 ```
-composer start
+php -S localhost:4242 index.php
 ```

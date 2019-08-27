@@ -1,4 +1,4 @@
-package com.stripe.recipe;
+package com.stripe.sample;
 
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -11,7 +11,6 @@ import static spark.Spark.port;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.annotations.SerializedName;
 
 import com.stripe.Stripe;
 import com.stripe.model.Customer;
@@ -21,21 +20,25 @@ import com.stripe.exception.*;
 import com.stripe.net.ApiResource;
 import com.stripe.net.Webhook;
 
+import io.github.cdimascio.dotenv.Dotenv;
+
 public class Server {
     private static Gson gson = new Gson();
 
     public static void main(String[] args) {
         port(4242);
-        Stripe.apiKey = System.getenv("STRIPE_SECRET_KEY");
+        String ENV_PATH = "../../";
+        Dotenv dotenv = Dotenv.configure().directory(ENV_PATH).load();
+
+        Stripe.apiKey = dotenv.get("STRIPE_SECRET_KEY");
 
         staticFiles.externalLocation(
-                Paths.get(Paths.get("").toAbsolutePath().getParent().getParent().toString() + "/client")
-                        .toAbsolutePath().toString());
+                Paths.get(Paths.get("").toAbsolutePath().toString(), dotenv.get("STATIC_DIR")).normalize().toString());
 
         get("/public-key", (request, response) -> {
             response.type("application/json");
             JsonObject publicKey = new JsonObject();
-            publicKey.addProperty("publicKey", System.getenv("STRIPE_PUBLIC_KEY"));
+            publicKey.addProperty("publicKey", dotenv.get("STRIPE_PUBLIC_KEY"));
             return publicKey.toString();
         });
 
@@ -62,7 +65,7 @@ public class Server {
         post("/webhook", (request, response) -> {
             String payload = request.body();
             String sigHeader = request.headers("Stripe-Signature");
-            String endpointSecret = System.getenv("STRIPE_WEBHOOK_SECRET");
+            String endpointSecret = dotenv.get("STRIPE_WEBHOOK_SECRET");
 
             Event event = null;
 
