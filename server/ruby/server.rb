@@ -2,11 +2,13 @@ require 'stripe'
 require 'sinatra'
 require 'dotenv'
 
-Dotenv.load(File.dirname(__FILE__) + '/../../.env')
+# Replace if using a different env file or config
+ENV_PATH = '/../../.env'.freeze
+Dotenv.load(File.dirname(__FILE__) + ENV_PATH)
 Stripe.api_key = ENV['STRIPE_SECRET_KEY']
 
 set :static, true
-set :public_folder, File.join(File.dirname(__FILE__), '../../client/')
+set :public_folder, File.join(File.dirname(__FILE__), ENV['STATIC_DIR'])
 set :port, 4242
 
 get '/' do

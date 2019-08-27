@@ -5,12 +5,12 @@ use Stripe\Stripe;
 
 require 'vendor/autoload.php';
 
-if (PHP_SAPI == 'cli-server') {
-  $_SERVER['SCRIPT_NAME'] = '/index.php';
-}
+$ENV_PATH = '../..';
 
-$dotenv = Dotenv\Dotenv::create(realpath('../..'));
+$dotenv = Dotenv\Dotenv::create(realpath($ENV_PATH));
 $dotenv->load();
+
+require './config.php';
 
 $app = new \Slim\App;
 
@@ -28,24 +28,10 @@ $app->add(function ($request, $response, $next) {
     Stripe::setApiKey(getenv('STRIPE_SECRET_KEY'));
     return $next($request, $response);
 });
-$app->get('/css/normalize.css', function (Request $request, Response $response, array $args) { 
-  return $response->withHeader('Content-Type', 'text/css')->write(file_get_contents('../../client/css/normalize.css'));
-});
-$app->get('/css/global.css', function (Request $request, Response $response, array $args) { 
-  return $response->withHeader('Content-Type', 'text/css')->write(file_get_contents('../../client/css/global.css'));
-});
-$app->get('/script.js', function (Request $request, Response $response, array $args) { 
-  return $response->withHeader('Content-Type', 'text/javascript')->write(file_get_contents('../../client/script.js'));
-});
-
-$app->get('/pasha-card.svg', function (Request $request, Response $response, array $args) { 
-  return $response->withHeader('Content-Type', 'image/svg+xml')->write(file_get_contents('../../client/pasha-card.svg'));
-});
-
 
 $app->get('/', function (Request $request, Response $response, array $args) {   
   // Display checkout page
-  return $response->write(file_get_contents('../../client/index.html'));
+  return $response->write(file_get_contents(getenv('STATIC_DIR') . '/index.html'));
 });
 
 $app->get('/public-key', function (Request $request, Response $response, array $args) {
@@ -54,7 +40,6 @@ $app->get('/public-key', function (Request $request, Response $response, array $
   // Send public key details to client
   return $response->withJson(array('publicKey' => $pub_key));
 });
-
 
 $app->post('/create-setup-intent', function (Request $request, Response $response, array $args) {  
     $setupIntent = \Stripe\SetupIntent::create();
@@ -71,7 +56,6 @@ $app->post('/create-customer', function (Request $request, Response $response, a
   $customer = \Stripe\Customer::create([
     "payment_method" => $body->payment_method
   ]);
-
 
   return $response->withJson($customer);
 });
