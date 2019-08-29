@@ -3,7 +3,15 @@
 This sample shows how to build a form to save a credit card without taking a payment using the [Setup Intents API](https://stripe.com/docs/api/setup_intents). This sample
 is a fully working version of [this guide](https://stripe.com/docs/payments/cards/saving-cards#saving-card-without-payment).
 
-See a hosted version of the [demo](https://q0sh7.sse.codesandbox.io/) in test mode or [fork on codesandbox.io](https://codesandbox.io/s/stripe-saving-card-without-payment-q0sh7)
+**Demo**
+
+See a hosted version of the [sample](https://q0sh7.sse.codesandbox.io/) in test mode or [fork on codesandbox.io](https://codesandbox.io/s/stripe-saving-card-without-payment-q0sh7)
+
+The hosted demo is running in test mode -- use `4242424242424242` as a test card number with any CVC + future expiration date.
+
+Use the `4000000000003220` test card number to trigger a 3D Secure challenge flow.
+
+Read more about test cards on Stripe at https://stripe.com/docs/testing.
 
 <img src="./saving-card-without-payment.png" alt="Credit card details page" align="center">
 
