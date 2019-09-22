@@ -7,7 +7,12 @@ const envPath = resolve(ENV_PATH);
 const env = require("dotenv").config({ path: envPath });
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
-app.use(express.static(process.env.STATIC_DIR));
+try {
+  app.use(express.static(process.env.STATIC_DIR));
+} catch (e) {
+  console.log("Missing env file, be sure to copy .env.example to .env");
+}
+
 app.use(
   express.json({
     // We need the raw body to verify webhook signatures.
@@ -33,20 +38,11 @@ app.post("/create-setup-intent", async (req, res) => {
   res.send(await stripe.setupIntents.create());
 });
 
-app.post("/create-customer", async (req, res) => {
-  // This creates a new Customer and attaches the PaymentMethod in one API call.
-  const customer = await stripe.customers.create({
-    payment_method: req.body.payment_method
-  });
-  // At this point, associate the ID of the Customer object with your
-  // own internal representation of a customer, if you have one.
-  res.send(customer);
-});
-
 // Webhook handler for asynchronous events.
 app.post("/webhook", async (req, res) => {
   let data;
   let eventType;
+
   // Check if webhook signing is configured.
   if (process.env.STRIPE_WEBHOOK_SECRET) {
     // Retrieve the event by verifying the signature using the raw body and secret.
@@ -54,7 +50,7 @@ app.post("/webhook", async (req, res) => {
     let signature = req.headers["stripe-signature"];
 
     try {
-      event = stripe.webhooks.constructEvent(
+      event = await stripe.webhooks.constructEvent(
         req.rawBody,
         signature,
         process.env.STRIPE_WEBHOOK_SECRET
@@ -74,19 +70,36 @@ app.post("/webhook", async (req, res) => {
   }
 
   if (eventType === "setup_intent.setup_failed") {
-    console.log(
-      `🔔  Occurs when a SetupIntent has failed the attempt to setup a payment method. ${data}`
-    );
+    console.log(`🔔  A SetupIntent has failed the to setup a PaymentMethod.`);
   }
 
   if (eventType === "setup_intent.succeeded") {
     console.log(
-      `🔔  Occurs when an SetupIntent has successfully setup a payment method. ${data}`
+      `🔔  A SetupIntent has successfully setup a PaymentMethod for future use.`
     );
+
+    // Get Customer billing details from the PaymentMethod
+    const paymentMethod = await stripe.paymentMethods.retrieve(
+      data.object.payment_method
+    );
+
+    // Create a Customer to store the PaymentMethod ID for later use
+    const customer = await stripe.customers.create({
+      payment_method: data.object.payment_method,
+      email: paymentMethod.billing_details.email
+    });
+
+    // At this point, associate the ID of the Customer object with your
+    // own internal representation of a customer, if you have one.
+
+    console.log(`🔔  A Customer has successfully been created ${customer.id}`);
+
+    // You can also attach a PaymentMethod to an existing Customer
+    // https://stripe.com/docs/api/payment_methods/attach
   }
 
   if (eventType === "setup_intent.created") {
-    console.log(`🔔  Occurs when a new SetupIntent is created. ${data}`);
+    console.log(`🔔  A new SetupIntent is created. ${data.object.id}`);
   }
 
   res.sendStatus(200);

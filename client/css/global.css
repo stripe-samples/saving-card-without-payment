@@ -1,17 +1,16 @@
 /* Variables */
 :root {
-  --gray-offset: rgba(0, 0, 0, 0.03);
+  --body-color: rgb(247, 250, 252);
+  --button-color: rgb(30, 166, 114);
+  --accent-color: #0a721b;
+  --secondary-color: #ed5f74;
+  --link-color: #ffffff;
+  --font-color: rgb(105, 115, 134);
   --gray-border: rgba(0, 0, 0, 0.15);
   --gray-light: rgba(0, 0, 0, 0.4);
-  --gray-mid: rgba(0, 0, 0, 0.7);
-  --gray-dark: rgba(0, 0, 0, 0.9);
-  --body-color: var(--gray-mid);
-  --headline-color: var(--gray-dark);
-  --accent-color: #0066f0;
   --body-font-family: -apple-system, BlinkMacSystemFont, sans-serif;
   --radius: 6px;
-  --logo-image: url("https://cdn.glitch.com/804a52b5-e10e-4c27-a231-c2fff9bfec0f%2FKAVHOLM.svg?v=1561585740202");
-  --form-width: 343px;
+  --form-width: 400px;
 }
 
 /* Base */
@@ -21,27 +20,7 @@
 body {
   font-family: var(--body-font-family);
   font-size: 16px;
-  color: var(--body-color);
   -webkit-font-smoothing: antialiased;
-}
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  color: var(--body-color);
-  margin-top: 2px;
-  margin-bottom: 4px;
-}
-h1 {
-  font-size: 27px;
-  color: var(--headline-color);
-}
-h4 {
-  font-weight: 500;
-  font-size: 14px;
-  color: var(--gray-light);
 }
 
 /* Layout */
@@ -57,63 +36,61 @@ h4 {
   min-height: 100vh;
   margin: 0 auto;
 }
-.sr-header {
-  margin-bottom: 32px;
-}
-.sr-payment-summary {
-  margin-bottom: 20px;
-}
-.sr-main,
-.sr-content {
+.sr-main {
   display: flex;
   flex-direction: column;
   justify-content: center;
   height: 100%;
   align-self: center;
-}
-.sr-main {
+  padding: 50px 50px 75px 50px;
+  background: var(--body-color);
   width: var(--form-width);
+  border-radius: var(--radius);
+  box-shadow: 0px 0px 0px 0.5px rgba(50, 50, 93, 0.1),
+    0px 2px 5px 0px rgba(50, 50, 93, 0.1), 0px 1px 1.5px 0px rgba(0, 0, 0, 0.07);
 }
-.sr-content {
-  padding-left: 48px;
+.sr-picker {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 25px;
 }
-.sr-header__logo {
-  background-image: var(--logo-image);
-  height: 24px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  width: 100%;
-}
-.sr-legal-text {
-  color: var(--gray-light);
-  text-align: center;
-  font-size: 13px;
-  line-height: 17px;
-  margin-top: 12px;
-}
-
-.sr-field-error {
+.sr-picker button {
+  background: none !important;
+  border: none;
+  padding: 0 !important;
+  /*optional*/
+  font-family: arial, sans-serif;
+  /*input has OS specific font-family*/
   color: var(--accent-color);
+  cursor: pointer;
+  width: 75px;
+  box-shadow: none;
+  border-radius: 0;
+}
+.sr-picker button:hover,
+.sr-picker button:focus,
+.sr-picker button.selected {
+  outline: none;
+  box-shadow: none;
+  border-radius: 0;
+}
+.sr-picker button:hover,
+.sr-picker button:focus {
+  border-bottom: 2px solid var(--secondary-color);
+}
+.sr-picker button.selected {
+  border-bottom: 2px solid var(--accent-color);
+}
+.sr-field-error {
+  color: var(--font-color);
   text-align: left;
   font-size: 13px;
   line-height: 17px;
   margin-top: 12px;
 }
 
-/* Form */
-.sr-form-row {
-  margin: 16px 0;
-}
-label {
-  font-size: 13px;
-  font-weight: 500;
-  margin-bottom: 8px;
-  display: inline-block;
-}
-
 /* Inputs */
 .sr-input,
-.sr-select,
 input[type="text"] {
   border: 1px solid var(--gray-border);
   border-radius: var(--radius);
@@ -139,114 +116,37 @@ button:focus,
 input[type="text"]::placeholder {
   color: var(--gray-light);
 }
-
-/* Checkbox */
-.sr-checkbox-label {
-  position: relative;
-  cursor: pointer;
-}
-
-.sr-checkbox-label input {
-  opacity: 0;
-  margin-right: 6px;
-}
-
-.sr-checkbox-label .sr-checkbox-check {
-  position: absolute;
-  left: 0;
-  height: 16px;
-  width: 16px;
-  background-color: white;
-  border: 1px solid var(--gray-border);
-  border-radius: 4px;
-  transition: all 0.2s ease;
-}
-
-.sr-checkbox-label input:focus ~ .sr-checkbox-check {
-  box-shadow: 0 0 0 1px rgba(50, 151, 211, 0.3), 0 1px 1px 0 rgba(0, 0, 0, 0.07),
-    0 0 0 4px rgba(50, 151, 211, 0.3);
-  outline: none;
-}
-
-.sr-checkbox-label input:checked ~ .sr-checkbox-check {
-  background-color: var(--accent-color);
-  background-image: url("https://cdn.glitch.com/804a52b5-e10e-4c27-a231-c2fff9bfec0f%2Ficon-checkmark.svg?v=1561586156671");
-  background-repeat: no-repeat;
-  background-size: 16px;
-  background-position: -1px -1px;
-}
-
-/* Select */
-.sr-select {
-  display: block;
+.sr-result {
   height: 44px;
-  margin: 0;
-  background-image: url("https://cdn.glitch.com/804a52b5-e10e-4c27-a231-c2fff9bfec0f%2Ficon-chevron-down.svg?v=1561504532379");
-  background-repeat: no-repeat, repeat;
-  background-position: right 12px top 50%, 0 0;
-  background-size: 0.65em auto, 100%;
+  -webkit-transition: height 1s ease;
+  -moz-transition: height 1s ease;
+  -o-transition: height 1s ease;
+  transition: height 1s ease;
+  color: var(--font-color);
+  overflow: auto;
 }
-.sr-select:after {
+.sr-result code {
+  overflow: scroll;
 }
-.sr-select::-ms-expand {
-  display: none;
-}
-.sr-select:hover {
-  cursor: pointer;
-}
-.sr-select:focus {
-  box-shadow: 0 0 0 1px rgba(50, 151, 211, 0.3), 0 1px 1px 0 rgba(0, 0, 0, 0.07),
-    0 0 0 4px rgba(50, 151, 211, 0.3);
-  outline: none;
-}
-.sr-select option {
-  font-weight: 400;
-}
-.sr-select:invalid {
-  color: var(--gray-light);
-  background-opacity: 0.4;
+.sr-result.expand {
+  height: 350px;
 }
 
-/* Combo inputs */
-.sr-combo-inputs {
-  display: flex;
-  flex-direction: column;
-}
-.sr-combo-inputs input,
-.sr-combo-inputs .sr-select {
-  border-radius: 0;
-  border-bottom: 0;
-}
-.sr-combo-inputs > input:first-child,
-.sr-combo-inputs > .sr-select:first-child {
-  border-radius: var(--radius) var(--radius) 0 0;
-}
-.sr-combo-inputs > input:last-child,
-.sr-combo-inputs > .sr-select:last-child {
-  border-radius: 0 0 var(--radius) var(--radius);
-  border-bottom: 1px solid var(--gray-border);
-}
-.sr-combo-inputs > .sr-combo-inputs-row:first-child input:first-child {
-  border-radius: var(--radius) 0 0 0;
-}
-.sr-combo-inputs > .sr-combo-inputs-row:first-child input:last-child {
-  border-radius: 0 var(--radius) 0 0;
-}
-.sr-combo-inputs-row:not(:first-of-type) .sr-input {
-  border-radius: 0 0 var(--radius) var(--radius);
-}
 .sr-combo-inputs-row {
-  width: 100%;
-  display: flex;
+  box-shadow: 0px 0px 0px 0.5px rgba(50, 50, 93, 0.1),
+    0px 2px 5px 0px rgba(50, 50, 93, 0.1), 0px 1px 1.5px 0px rgba(0, 0, 0, 0.07);
+  border-radius: 7px;
 }
 
-.sr-combo-inputs-row > input {
-  width: 100%;
-  border-radius: 0;
+/* Form */
+.sr-form-row {
+  margin: 16px 0;
 }
-
-.sr-combo-inputs-row > input:first-child {
-  border-right: 0;
+label {
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  display: inline-block;
 }
 
 /* Buttons and links */
@@ -261,6 +161,8 @@ button {
   cursor: pointer;
   transition: all 0.2s ease;
   display: block;
+  box-shadow: 0px 4px 5.5px 0px rgba(0, 0, 0, 0.07);
+  width: 100%;
 }
 button:hover {
   filter: contrast(115%);
@@ -269,14 +171,13 @@ button:active {
   transform: translateY(0px) scale(0.98);
   filter: brightness(0.9);
 }
-
-.sr-payment-form button,
-.fullwidth {
-  width: 100%;
+button:disabled {
+  opacity: 0.5;
+  cursor: none;
 }
 
 a {
-  color: var(--accent-color);
+  color: var(--link-color);
   text-decoration: none;
   transition: all 0.2s ease;
 }
@@ -290,13 +191,6 @@ a:active {
 }
 
 /* Code block */
-.sr-callout {
-  background: var(--gray-offset);
-  padding: 12px;
-  border-radius: var(--radius);
-  max-height: 200px;
-  overflow: auto;
-}
 code,
 pre {
   font-family: "SF Mono", "IBM Plex Mono", "Menlo", monospace;
@@ -331,45 +225,17 @@ pre {
 
   .sr-main {
     width: 100%;
+    height: 305px;
+    background: rgb(247, 250, 252);
+    box-shadow: 0px 0px 0px 0.5px rgba(50, 50, 93, 0.1),
+      0px 2px 5px 0px rgba(50, 50, 93, 0.1),
+      0px 1px 1.5px 0px rgba(0, 0, 0, 0.07);
+    border-radius: 6px;
   }
 }
 
-/* Pasha styles – Brand-overrides, can split these out */
-:root {
-  --accent-color: #ed5f74;
-  --headline-color: var(--accent-color);
-  --logo-image: url("https://cdn.glitch.com/804a52b5-e10e-4c27-a231-c2fff9bfec0f%2Flogo-pasha.svg?v=1561504532656");
-}
-
-.pasha-image-stack {
-  display: grid;
-  grid-gap: 12px;
-  grid-template-columns: auto auto;
-}
-
-.pasha-image-stack img {
-  border-radius: var(--radius);
-  background-color: var(--gray-border);
-  box-shadow: 0 7px 14px 0 rgba(50, 50, 93, 0.1),
-    0 3px 6px 0 rgba(0, 0, 0, 0.07);
-  transition: all 0.8s ease;
-  opacity: 0;
-}
-
-.pasha-image-stack img:nth-child(1) {
-  transform: translate(12px, -12px);
-  opacity: 1;
-}
-.pasha-image-stack img:nth-child(2) {
-  transform: translate(-24px, 16px);
-  opacity: 1;
-}
-.pasha-image-stack img:nth-child(3) {
-  transform: translate(68px, -100px);
-  opacity: 1;
-}
-
 /* todo: spinner/processing state, errors, animations */
+
 .spinner,
 .spinner:before,
 .spinner:after {
@@ -417,6 +283,7 @@ pre {
   -webkit-animation: loading 2s infinite ease;
   animation: loading 2s infinite ease;
 }
+
 @-webkit-keyframes loading {
   0% {
     -webkit-transform: rotate(0deg);
@@ -446,33 +313,6 @@ pre {
   animation-timing-function: ease;
 }
 
-.sr-payment-form .sr-form-row {
-  animation: 0.4s field-in;
-  animation-fill-mode: both;
-  animation-timing-function: ease;
-  transform-origin: 50% 0%;
-}
-
-/* need saas for loop :D  */
-.sr-payment-form .sr-form-row:nth-child(1) {
-  animation-delay: 0;
-}
-.sr-payment-form .sr-form-row:nth-child(2) {
-  animation-delay: 60ms;
-}
-.sr-payment-form .sr-form-row:nth-child(3) {
-  animation-delay: 120ms;
-}
-.sr-payment-form .sr-form-row:nth-child(4) {
-  animation-delay: 180ms;
-}
-.sr-payment-form .sr-form-row:nth-child(5) {
-  animation-delay: 240ms;
-}
-.sr-payment-form .sr-form-row:nth-child(6) {
-  animation-delay: 300ms;
-}
-
 .hidden {
   display: none;
 }
@@ -497,8 +337,4 @@ pre {
     opacity: 1;
     transform: scale(1);
   }
-}
-
-.sr-endstate {
-  display: none;
 }

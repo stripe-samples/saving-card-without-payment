@@ -32,42 +32,31 @@ var stripeElements = function(publicKey, setupIntent) {
   });
 
   // Handle payment submission when user clicks the pay button.
-  var form = document.getElementById("payment-form");
-  form.addEventListener("submit", function(event) {
+  var button = document.getElementById("submit");
+  button.addEventListener("click", function(event) {
     event.preventDefault();
     changeLoadingState(true);
+    var email = document.getElementById("email").value;
+
     stripe
-      .handleCardSetup(setupIntent.client_secret, card)
+      .handleCardSetup(setupIntent.client_secret, card, {
+        payment_method_data: {
+          billing_details: { email: email }
+        }
+      })
       .then(function(result) {
         if (result.error) {
           changeLoadingState(false);
           var displayError = document.getElementById("card-errors");
           displayError.textContent = result.error.message;
         } else {
-          fetch("/create-customer", {
-            method: "post",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify(result.setupIntent)
-          })
-            .then(function(response) {
-              return response.json();
-            })
-            .then(function(customer) {
-              changeLoadingState(false);
-              document.getElementById("endstate").style.display = "block";
-              document.getElementById("startstate").style.display = "none";
-              document.getElementById(
-                "setupIntent-response"
-              ).innerHTML = JSON.stringify(result.setupIntent, null, 2);
-            });
+          orderComplete(stripe, setupIntent.client_secret);
         }
       });
   });
 };
 
-function getSetupIntent(publicKey) {
+var getSetupIntent = function(publicKey) {
   return fetch("/create-setup-intent", {
     method: "post",
     headers: {
@@ -80,9 +69,9 @@ function getSetupIntent(publicKey) {
     .then(function(setupIntent) {
       stripeElements(publicKey, setupIntent);
     });
-}
+};
 
-function getPublicKey() {
+var getPublicKey = function() {
   return fetch("/public-key", {
     method: "get",
     headers: {
@@ -95,10 +84,10 @@ function getPublicKey() {
     .then(function(response) {
       getSetupIntent(response.publicKey);
     });
-}
+};
 
 // Show a spinner on payment submission
-function changeLoadingState(isLoading) {
+var changeLoadingState = function(isLoading) {
   if (isLoading) {
     document.querySelector("button").disabled = true;
     document.querySelector("#spinner").classList.remove("hidden");
@@ -108,6 +97,23 @@ function changeLoadingState(isLoading) {
     document.querySelector("#spinner").classList.add("hidden");
     document.querySelector("#button-text").classList.remove("hidden");
   }
-}
+};
+
+/* Shows a success / error message when the payment is complete */
+var orderComplete = function(stripe, clientSecret) {
+  stripe.retrieveSetupIntent(clientSecret).then(function(result) {
+    var setupIntent = result.setupIntent;
+    var setupIntentJson = JSON.stringify(setupIntent, null, 2);
+
+    document.querySelector(".sr-payment-form").classList.add("hidden");
+    document.querySelector(".sr-result").classList.remove("hidden");
+    document.querySelector("pre").textContent = setupIntentJson;
+    setTimeout(function() {
+      document.querySelector(".sr-result").classList.add("expand");
+    }, 200);
+
+    changeLoadingState(false);
+  });
+};
 
 getPublicKey();

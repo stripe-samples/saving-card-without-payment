@@ -1,75 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Stripe Payment Page Recipe</title>
     <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Saving a Card sample</title>
+    <meta name="description" content="A demo of Stripe Payment Intents" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="css/normalize.css" />
     <link rel="stylesheet" href="css/global.css" />
     <script src="https://js.stripe.com/v3/"></script>
     <script src="/script.js" defer></script>
   </head>
+
   <body>
     <div class="sr-root">
-      <div id="startstate" class="sr-main">
-        <header class="sr-header">
-          <div class="sr-header__logo"></div>
-        </header>
-        <div class="sr-payment-summary">
-          <h1>Link a card to your account</h1>
-          <h4>
-            You'll be able to use the card for your active subscriptions and
-            future purchases.
-          </h4>
-        </div>
-        <div class="sr-payment-form">
-          <form action="" method="get" id="payment-form">
-            <div class="sr-form-row">
-              <label for="card-element">
-                Default payment card
-              </label>
-              <div class="sr-input sr-card-element" id="card-element"></div>
-              <div class="sr-field-error" id="card-errors" role="alert"></div>
-            </div>
-            <div class="sr-form-row">
-              <button id="card-button"><div class="spinner hidden" id="spinner"></div><span id="button-text">Link card to your account</span></button>
-            </div>
-          </form>
-        </div>
-      </div>
-      <div id="endstate" class="sr-main sr-endstate">
-        <header class="sr-header">
-          <div class="sr-header__logo"></div>
-        </header>
-        <div class="sr-payment-summary">
-          <h1>
-            Your card setup was successful.
-          </h1>
-          <h4>
-            A customer has been created with the payment method. View
-            <a href="https://stripe.com/docs/api/setup_intents"
-              >SetupIntent response</a
-            >
-          </h4>
-        </div>
-
-        <div class="sr-section">
-          <div class="sr-callout">
-            <pre id="setupIntent-response"></pre>
+      <div class="sr-main">
+        <div class="sr-payment-form card">
+          <div class="sr-form-row">
+            <label>
+              Account details
+            </label>
+            <input type="text" id="email" placeholder="Email address" />
           </div>
-          <button onclick="window.location.href='/'" class="fullwidth">
-            Restart demo
+
+          <div class="sr-form-row">
+            <label>
+              Payment details
+            </label>
+            <div class="sr-input sr-element sr-card-element" id="card-element">
+              <!-- A Stripe card Element will be inserted here. -->
+            </div>
+          </div>
+          <div class="sr-field-error" id="card-errors" role="alert"></div>
+          <button id="submit">
+            <div class="spinner hidden" id="spinner"></div>
+            <span id="button-text">Link your card to your account</span>
           </button>
         </div>
-      </div>
-      <div class="sr-content">
-        <img
-          alt="Pasha company logo"
-          src="pasha-card.svg"
-          width="240"
-          height="260"
-        />
+        <div class="sr-result hidden">
+          <p>Card setup completed<br /></p>
+          <pre>
+            <code></code>
+          </pre>
+        </div>
       </div>
     </div>
   </body>

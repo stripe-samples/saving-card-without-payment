@@ -47,19 +47,6 @@ $app->post('/create-setup-intent', function (Request $request, Response $respons
     return $response->withJson($setupIntent);
 });
 
-$app->post('/create-customer', function (Request $request, Response $response, array $args) {  
-  $body = json_decode($request->getBody());
-  
-  # This creates a new Customer and attaches the PaymentMethod in one API call.
-  # At this point, associate the ID of the Customer object with your
-  # own internal representation of a customer, if you have one. 
-  $customer = \Stripe\Customer::create([
-    "payment_method" => $body->payment_method
-  ]);
-
-  return $response->withJson($customer);
-});
-
 
 $app->post('/webhook', function(Request $request, Response $response) {
     $logger = $this->get('logger');
@@ -83,15 +70,31 @@ $app->post('/webhook', function(Request $request, Response $response) {
     $object = $event['data']['object'];
     
     if ($type == 'setup_intent.created') {
-      $logger->info('Occurs when a new SetupIntent is created. ');
+      $logger->info('A new SetupIntent was created. ');
     }
 
     if ($type == 'setup_intent.succeeded') {
-      $logger->info('Occurs when an SetupIntent has successfully setup a payment method.');
+      $logger->info('A SetupIntent has successfully setup a PaymentMethod for future use.');
+
+      // Get Customer billing details from the PaymentMethod
+      $payment_method = \Stripe\PaymentMethod::retrieve($object->payment_method);
+
+      // Create a Customer to store the PaymentMethod ID for later use
+      $customer = \Stripe\Customer::create([
+        "payment_method" => $object->payment_method,
+        'email' => $payment_method->billing_details->email
+      ]);    
+
+      // At this point, associate the ID of the Customer object with your
+      // own internal representation of a customer, if you have one. 
+      $logger->info('A Customer has successfully been created.');
+
+      // You can also attach a PaymentMethod to an existing Customer
+      // https://stripe.com/docs/api/payment_methods/attach
     }
 
     if ($type == 'setup_intent.failed') {
-      $logger->info('Occurs when a SetupIntent has failed the attempt to setup a payment method.');
+      $logger->info('A SetupIntent has failed the attempt to setup a PaymentMethod.');
     }
 
     return $response->withJson([ 'status' => 'success' ])->withStatus(200);

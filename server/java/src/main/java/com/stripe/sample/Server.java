@@ -14,11 +14,14 @@ import com.google.gson.JsonObject;
 
 import com.stripe.Stripe;
 import com.stripe.model.Customer;
+import com.stripe.model.PaymentMethod;
 import com.stripe.model.Event;
 import com.stripe.model.SetupIntent;
 import com.stripe.exception.*;
 import com.stripe.net.ApiResource;
 import com.stripe.net.Webhook;
+import com.stripe.param.CustomerCreateParams;
+import com.stripe.model.EventDataObjectDeserializer;
 
 import io.github.cdimascio.dotenv.Dotenv;
 
@@ -51,17 +54,6 @@ public class Server {
             return gson.toJson(setupIntent);
         });
 
-        post("/create-customer", (request, response) -> {
-            response.type("application/json");
-
-            SetupIntent setupIntent = ApiResource.GSON.fromJson(request.body(), SetupIntent.class);
-            // This creates a new Customer and attaches the PaymentMethod in one API call.
-            Map<String, Object> customerParams = new HashMap<String, Object>();
-            customerParams.put("payment_method", setupIntent.getPaymentMethod());
-            Customer customer = Customer.create(customerParams);
-            return customer.toJson();
-        });
-
         post("/webhook", (request, response) -> {
             String payload = request.body();
             String sigHeader = request.headers("Stripe-Signature");
@@ -79,13 +71,31 @@ public class Server {
 
             switch (event.getType()) {
             case "setup_intent.created":
-                System.out.println("Occurs when a new SetupIntent is created.");
+                System.out.println("🔔 A new SetupIntent was created.");
                 break;
             case "setup_intent.succeeded":
-                System.out.println("Occurs when an SetupIntent has successfully setup a payment method.");
+                EventDataObjectDeserializer deserializer = event.getDataObjectDeserializer();
+                SetupIntent intent = ApiResource.GSON.fromJson(deserializer.getRawJson(), SetupIntent.class);
+                System.out.println("🔔 A SetupIntent has successfully setup a PaymentMethod.");
+
+                // Get Customer billing details from the PaymentMethod
+                PaymentMethod paymentMethod = PaymentMethod.retrieve(intent.getPaymentMethod());
+
+                // Create a Customer to store the PaymentMethod ID for later use
+                Customer customer = Customer
+                        .create(new CustomerCreateParams.Builder().setPaymentMethod(intent.getPaymentMethod())
+                                .setEmail(paymentMethod.getBillingDetails().getEmail()).build());
+
+                // At this point, associate the ID of the Customer object with your
+                // own internal representation of a customer, if you have one.
+                
+                System.out.println("🔔 A Customer has successfully been created.");
+
+                // You can also attach a PaymentMethod to an existing Customer
+                // https://stripe.com/docs/api/payment_methods/attach
                 break;
             case "setup_intent.setup_failed":
-                System.out.println("Occurs when a SetupIntent has failed the attempt to setup a payment method.");
+                System.out.println("🔔 A SetupIntent has failed the attempt to setup a PaymentMethod.");
                 break;
             default:
                 // Unexpected event type

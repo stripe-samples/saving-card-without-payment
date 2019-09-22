@@ -13,7 +13,7 @@ Use the `4000000000003220` test card number to trigger a 3D Secure challenge flo
 
 Read more about test cards on Stripe at https://stripe.com/docs/testing.
 
-<img src="./saving-card-without-payment.png" alt="Credit card details page" align="center">
+<img src="./saving-card-details.gif" alt="Saving a card to a customer demo" align="center">
 
 ## How to run locally
 

@@ -31,18 +31,6 @@ post '/create-setup-intent' do
   data.to_json
 end
 
-post '/create-customer' do
-  content_type 'application/json'
-  data = JSON.parse request.body.read
-
-  # This creates a new Customer and attaches the PaymentMethod in one API call.
-  # At this point, associate the ID of the Customer object with your
-  # own internal representation of a customer, if you have one. 
-  customer = Stripe::Customer.create(payment_method: data['payment_method'])
-
-  customer.to_json
-end
-
 post '/webhook' do
   # You can use webhooks to receive information about asynchronous payment events.
   # For more about our webhook events check out https://stripe.com/docs/webhooks.
@@ -52,7 +40,7 @@ post '/webhook' do
     # Retrieve the event by verifying the signature using the raw body and secret if webhook signing is configured.
     sig_header = request.env['HTTP_STRIPE_SIGNATURE']
     event = nil
-  
+
     begin
       event = Stripe::Webhook.construct_event(
         payload, sig_header, webhook_secret
@@ -63,7 +51,7 @@ post '/webhook' do
       return
     rescue Stripe::SignatureVerificationError => e
       # Invalid signature
-      puts "⚠️  Webhook signature verification failed."
+      puts '⚠️  Webhook signature verification failed.'
       status 400
       return
     end
@@ -71,26 +59,40 @@ post '/webhook' do
     data = JSON.parse(payload, symbolize_names: true)
     event = Stripe::Event.construct_from(data)
   end
-  # Get the type of webhook event sent - used to check the status of SetupIntents.    
+  # Get the type of webhook event sent - used to check the status of SetupIntents.
   event_type = event['type']
   data = event['data']
   data_object = data['object']
 
   if event_type == 'setup_intent.setup_failed'
-    puts "🔔  Occurs when a SetupIntent has failed the attempt to setup a payment method."
+    puts '🔔  A SetupIntent has failed the attempt to setup a PaymentMethod.'
   end
 
   if event_type == 'setup_intent.succeeded'
-    puts "🔔 Occurs when an SetupIntent has successfully setup a payment method."
+    puts '🔔 A SetupIntent has successfully setup a PaymentMethod for future use.'
+    
+    # Get Customer billing details from the PaymentMethod
+    payment_method = Stripe::PaymentMethod.retrieve(data_object['payment_method'])
+
+    # This creates a new Customer and attaches the PaymentMethod in one API call.
+    customer = Stripe::Customer.create(
+      payment_method: data_object['payment_method'], 
+      email: payment_method['billing_details']['email'])
+
+    # At this point, associate the ID of the Customer object with your
+    # own internal representation of a customer, if you have one.
+    puts '🔔 A Customer has successfully been created.'
+
+    # You can also attach a PaymentMethod to an existing Customer
+    # https://stripe.com/docs/api/payment_methods/attach
   end
 
   if event_type == 'setup_intent.created'
-    puts "🔔 Occurs when a new SetupIntent is created."
+    puts '🔔 A new SetupIntent was created.'
   end
 
   content_type 'application/json'
   {
     status: 'success'
   }.to_json
-
 end

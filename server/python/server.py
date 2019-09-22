@@ -23,6 +23,7 @@ static_dir = str(os.path.abspath(os.path.join(
 app = Flask(__name__, static_folder=static_dir,
             static_url_path="", template_folder=static_dir)
 
+
 @app.route('/', methods=['GET'])
 def get_setup_intent_page():
     return render_template('index.html')
@@ -37,21 +38,6 @@ def get_public_key():
 def create_setup_intent():
     setup_intent = stripe.SetupIntent.create()
     return jsonify(setup_intent)
-
-
-@app.route('/create-customer', methods=['POST'])
-def create_customer():
-    # Reads application/json and returns a response
-    data = json.loads(request.data)
-    try:
-        # This creates a new Customer and attaches the PaymentMethod in one API call.
-        customer = stripe.Customer.create(
-            payment_method=data['payment_method'])
-        # At this point, associate the ID of the Customer object with your
-        # own internal representation of a customer, if you have one.
-        return jsonify(customer)
-    except Exception as e:
-        return jsonify(e), 403
 
 
 @app.route('/webhook', methods=['POST'])
@@ -78,14 +64,31 @@ def webhook_received():
     data_object = data['object']
 
     if event_type == 'setup_intent.created':
-        print('🔔 Occurs when a new SetupIntent is created.')
+        print('🔔 A new SetupIntent was created.')
 
     if event_type == 'setup_intent.succeeded':
-        print('🔔 Occurs when an SetupIntent has successfully setup a payment method.')
+        print('🔔 A SetupIntent has successfully setup a PaymentMethod for future use.')
+
+        # Get Customer billing details from the PaymentMethod
+        payment_method = stripe.PaymentMethod.retrieve(
+            data_object['payment_method'])
+
+        # This creates a new Customer and attaches the PaymentMethod in one API call.
+        customer = stripe.Customer.create(
+            payment_method=data_object['payment_method'],
+            email=payment_method['billing_details']['email'])
+            
+        # At this point, associate the ID of the Customer object with your
+        # own internal representation of a customer, if you have one.
+
+        print('🔔 A Customer has successfully been created.')
+
+        # You can also attach a PaymentMethod to an existing Customer
+        # https://stripe.com/docs/api/payment_methods/attach
 
     if event_type == 'setup_intent.setup_failed':
         print(
-            '🔔 Occurs when a SetupIntent has failed the attempt to setup a payment method.')
+            '🔔A SetupIntent has failed the attempt to setup a PaymentMethod.')
 
     return jsonify({'status': 'success'})
 
