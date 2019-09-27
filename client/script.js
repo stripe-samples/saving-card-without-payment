@@ -51,8 +51,8 @@ var stripeElements = function(publicKey, setupIntent) {
           displayError.textContent = result.error.message;
         } else {
           // The PaymentMethod was successfully setup
-          // Be sure to attach the PaymentMethod to a Customer as shown
-          // in the server webhook in this sample
+          // Be sure to attach the PaymentMethod to a Customer as shown by
+          // the server webhook in this sample
           orderComplete(stripe, setupIntent.client_secret);
         }
       });
