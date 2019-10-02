@@ -17,7 +17,7 @@ Read more about test cards on Stripe at https://stripe.com/docs/testing.
 
 ## How to run locally
 
-This sample includes 5 server implementations in Node, Ruby, Python, Java, and PHP for the two integration types: [using-webhooks](/using-webhooks) and [without-webhooks](/without-webhooks). 
+This sample includes 5 server implementations in Node, Ruby, Python, Java, and PHP. 
 
 Follow the steps below to run locally.
 
