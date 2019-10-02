@@ -17,16 +17,56 @@ Read more about test cards on Stripe at https://stripe.com/docs/testing.
 
 ## How to run locally
 
-This sample implementation includes 5 servers in Node, Ruby, Python, Java, and PHP in the [/server](/server) directory. We included several RESTful server implementations, each with the same endpoints and logic.
-Pick the language you are most comfortable in and follow the instructions in the directory on how to run.
+This sample includes 5 server implementations in Node, Ruby, Python, Java, and PHP for the two integration types: [using-webhooks](/using-webhooks) and [without-webhooks](/without-webhooks). 
 
-If you want to run the sample locally, copy the .env.example file to your own .env file in this directory and follow the instructions in the specific server implementation you want to run.
+Follow the steps below to run locally.
+
+**1. Clone the repository:**
+
+```
+git clone https://github.com/stripe-samples/saving-card-without-payment
+```
+
+**2. Copy the .env.example to a .env file:**
 
 ```
 cp .env.example .env
 ```
 
-You will need a Stripe account with its own set of [API keys](https://stripe.com/docs/development#api-keys).
+You will need a Stripe account in order to run the demo. Once you set up your account, go to the Stripe [developer dashboard](https://stripe.com/docs/development#api-keys) to find your API keys.
+
+```
+STRIPE_PUBLIC_KEY=<replace-with-your-publishable-key>
+STRIPE_SECRET_KEY=<replace-with-your-secret-key>
+```
+
+`CLIENT_DIR` tells the server where to the client files are located and does not need to be modified unless you move the server files.
+
+**3. Follow the server instructions on how to run:**
+
+Pick the server language you want and follow the instructions in the server folder README on how to run.
+
+```
+cd server/node # there's a README in this folder with instructions
+npm install
+npm start
+```
+
+**4. [Optional] Run a webhook locally:**
+
+If you want to test with a local webhook on your machine, you can use the Stripe CLI to easily spin one up.
+
+First [install the CLI](https://stripe.com/docs/stripe-cli) and [link your Stripe account](https://stripe.com/docs/stripe-cli#link-account).
+
+```
+stripe listen --forward-to localhost:4242/webhook
+```
+
+The CLI will print a webhook secret key to the console. Set `STRIPE_WEBHOOK_SECRET` to this value in your .env file.
+
+You should see events logged in the console where the CLI is running.
+
+When you are ready to create a live webhook endpoint, follow our guide in the docs on [configuring a webhook endpoint in the dashboard](https://stripe.com/docs/webhooks/setup#configure-webhook-settings). 
 
 ### Supported languages
 
