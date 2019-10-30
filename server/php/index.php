@@ -5,9 +5,7 @@ use Stripe\Stripe;
 
 require 'vendor/autoload.php';
 
-$ENV_PATH = '../..';
-
-$dotenv = Dotenv\Dotenv::create(realpath($ENV_PATH));
+$dotenv = Dotenv\Dotenv::create(__DIR__);
 $dotenv->load();
 
 require './config.php';
@@ -35,9 +33,9 @@ $app->get('/', function (Request $request, Response $response, array $args) {
 });
 
 $app->get('/public-key', function (Request $request, Response $response, array $args) {
-  $pub_key = getenv('STRIPE_PUBLIC_KEY');
+  $pub_key = getenv('STRIPE_PUBLISHABLE_KEY');
   
-  // Send public key details to client
+  // Send publishable key details to client
   return $response->withJson(array('publicKey' => $pub_key));
 });
 
