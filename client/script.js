@@ -39,8 +39,9 @@ var stripeElements = function(publicKey, setupIntent) {
     var email = document.getElementById("email").value;
 
     stripe
-      .handleCardSetup(setupIntent.client_secret, card, {
-        payment_method_data: {
+      .confirmCardSetup(setupIntent.client_secret, {
+        payment_method: {
+          card: card,
           billing_details: { email: email }
         }
       })
