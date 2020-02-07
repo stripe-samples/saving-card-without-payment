@@ -36,7 +36,13 @@ def get_publishable_key():
 
 @app.route('/create-setup-intent', methods=['POST'])
 def create_setup_intent():
-    setup_intent = stripe.SetupIntent.create()
+    # Create or use an existing Customer to associate with the SetupIntent.
+    # The PaymentMethod will be stored to this Customer for later use.
+    customer = stripe.Customer.create()
+
+    setup_intent = stripe.SetupIntent.create(
+        customer=customer['id']
+    )
     return jsonify(setup_intent)
 
 
@@ -67,28 +73,25 @@ def webhook_received():
         print('🔔 A new SetupIntent was created.')
 
     if event_type == 'setup_intent.succeeded':
-        print('🔔 A SetupIntent has successfully setup a PaymentMethod for future use.')
+        print(
+            '🔔 A SetupIntent has successfully set up a PaymentMethod for future use.')
+    
+    if event_type == 'payment_method.attached':
+        print('🔔 A PaymentMethod has successfully been saved to a Customer.')
 
-        # Get Customer billing details from the PaymentMethod
-        payment_method = stripe.PaymentMethod.retrieve(
-            data_object['payment_method'])
-
-        # This creates a new Customer and attaches the PaymentMethod in one API call.
-        customer = stripe.Customer.create(
-            payment_method=data_object['payment_method'],
-            email=payment_method['billing_details']['email'])
-            
         # At this point, associate the ID of the Customer object with your
         # own internal representation of a customer, if you have one.
 
-        print('🔔 A Customer has successfully been created.')
-
-        # You can also attach a PaymentMethod to an existing Customer
-        # https://stripe.com/docs/api/payment_methods/attach
+        # Optional: update the Customer billing information with billing details from the PaymentMethod
+        stripe.Customer.modify(
+            data_object['customer'],
+            email=data_object['billing_details']['email']
+        )
+        print('🔔 Customer successfully updated.')
 
     if event_type == 'setup_intent.setup_failed':
         print(
-            '🔔A SetupIntent has failed the attempt to setup a PaymentMethod.')
+            '🔔 A SetupIntent has failed the attempt to set up a PaymentMethod.')
 
     return jsonify({'status': 'success'})
 

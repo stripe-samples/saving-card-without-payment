@@ -51,9 +51,7 @@ var stripeElements = function(publicKey, setupIntent) {
           var displayError = document.getElementById("card-errors");
           displayError.textContent = result.error.message;
         } else {
-          // The PaymentMethod was successfully setup
-          // Be sure to attach the PaymentMethod to a Customer as shown by
-          // the server webhook in this sample
+          // The PaymentMethod was successfully set up
           orderComplete(stripe, setupIntent.client_secret);
         }
       });

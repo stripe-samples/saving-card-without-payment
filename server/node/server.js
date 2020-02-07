@@ -33,7 +33,13 @@ app.get("/public-key", (req, res) => {
 });
 
 app.post("/create-setup-intent", async (req, res) => {
-  res.send(await stripe.setupIntents.create());
+  // Create or use an existing Customer to associate with the SetupIntent.
+  // The PaymentMethod will be stored to this Customer for later use.
+  const customer = await stripe.customers.create();
+
+  res.send(await stripe.setupIntents.create({
+    customer: customer.id
+  }));
 });
 
 // Webhook handler for asynchronous events.
@@ -67,37 +73,39 @@ app.post("/webhook", async (req, res) => {
     eventType = req.body.type;
   }
 
+  if (eventType === "setup_intent.created") {
+    console.log(`🔔  A new SetupIntent is created. ${data.object.id}`);
+  }
+
   if (eventType === "setup_intent.setup_failed") {
-    console.log(`🔔  A SetupIntent has failed the to setup a PaymentMethod.`);
+    console.log(`🔔  A SetupIntent has failed to set up a PaymentMethod.`);
   }
 
   if (eventType === "setup_intent.succeeded") {
     console.log(
-      `🔔  A SetupIntent has successfully setup a PaymentMethod for future use.`
+      `🔔  A SetupIntent has successfully set up a PaymentMethod for future use.`
     );
+  }
 
-    // Get Customer billing details from the PaymentMethod
-    const paymentMethod = await stripe.paymentMethods.retrieve(
-      data.object.payment_method
+  if (eventType === "payment_method.attached") {
+    console.log(
+      `🔔  A PaymentMethod ${data.object.id} has successfully been saved to a Customer ${data.object.customer}.`
     );
-
-    // Create a Customer to store the PaymentMethod ID for later use
-    const customer = await stripe.customers.create({
-      payment_method: data.object.payment_method,
-      email: paymentMethod.billing_details.email
-    });
 
     // At this point, associate the ID of the Customer object with your
     // own internal representation of a customer, if you have one.
 
-    console.log(`🔔  A Customer has successfully been created ${customer.id}`);
+    // Optional: update the Customer billing information with billing details from the PaymentMethod
+    const customer = await stripe.customers.update(
+      data.object.customer,
+      {email: data.object.billing_details.email}, 
+      () => {
+        console.log(
+          `🔔  Customer successfully updated.`
+        );
+      }
+    );
 
-    // You can also attach a PaymentMethod to an existing Customer
-    // https://stripe.com/docs/api/payment_methods/attach
-  }
-
-  if (eventType === "setup_intent.created") {
-    console.log(`🔔  A new SetupIntent is created. ${data.object.id}`);
   }
 
   res.sendStatus(200);
