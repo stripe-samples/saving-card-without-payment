@@ -96,7 +96,6 @@ class CheckoutActivityKotlin : AppCompatActivity() {
                 findViewById<CardInputWidget>(R.id.cardInputWidget)
             val paymentMethodCard = cardInputWidget.paymentMethodCard
 
-            // Later, you will need to attach the PaymentMethod to the Customer it belongs to.
             // This example collects the customer's email to know which customer the PaymentMethod belongs to, but your app might use an account id, session cookie, etc.
             val emailInput = findViewById<EditText>(R.id.emailInput)
             val billingDetails = PaymentMethod.BillingDetails.Builder()

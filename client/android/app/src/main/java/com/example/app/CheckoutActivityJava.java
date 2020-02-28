@@ -109,7 +109,6 @@ public class CheckoutActivityJava extends AppCompatActivity {
             CardInputWidget cardInputWidget = findViewById(R.id.cardInputWidget);
             PaymentMethodCreateParams.Card card = cardInputWidget.getPaymentMethodCard();
 
-            // Later, you will need to attach the PaymentMethod to the Customer it belongs to.
             // This example collects the customer's email to know which customer the PaymentMethod belongs to, but your app might use an account id, session cookie, etc.
             EditText emailInput = findViewById(R.id.emailInput);
             PaymentMethod.BillingDetails billingDetails = (new PaymentMethod.BillingDetails.Builder())
