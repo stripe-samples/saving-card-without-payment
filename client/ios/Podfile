@@ -1,0 +1,24 @@
+platform :ios, '11.0'
+
+workspace 'app.xcworkspace'
+
+target 'Save Card Without Payment (Swift)' do
+  project 'Save Card Without Payment (Swift).xcodeproj'
+
+  # Comment the next line if you don't want to use dynamic frameworks
+  use_frameworks!
+
+  # Pods for Sample
+  pod 'Stripe'
+end
+
+target 'Save Card Without Payment (ObjC)' do
+  project 'Save Card Without Payment (ObjC).xcodeproj'
+
+  # Comment the next line if you don't want to use dynamic frameworks
+  use_frameworks!
+
+  # Pods for Sample
+  pod 'Stripe'
+end
+
