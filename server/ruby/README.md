@@ -18,5 +18,5 @@ bundle install
 2. Run the server locally
 
 ```
-ruby server.rb
+ruby server.rb -o 127.0.0.1
 ```

@@ -28,12 +28,6 @@ app = Flask(__name__, static_folder=static_dir,
 def get_setup_intent_page():
     return render_template('index.html')
 
-
-@app.route('/public-key', methods=['GET'])
-def get_publishable_key():
-    return jsonify(publicKey=os.getenv('STRIPE_PUBLISHABLE_KEY'))
-
-
 @app.route('/create-setup-intent', methods=['POST'])
 def create_setup_intent():
     # Create or use an existing Customer to associate with the SetupIntent.
@@ -43,7 +37,7 @@ def create_setup_intent():
     setup_intent = stripe.SetupIntent.create(
         customer=customer['id']
     )
-    return jsonify(setup_intent)
+    return jsonify(publishableKey=os.getenv('STRIPE_PUBLISHABLE_KEY'), clientSecret=setup_intent.client_secret)
 
 
 @app.route('/webhook', methods=['POST'])

@@ -38,13 +38,6 @@ public class Server {
         staticFiles.externalLocation(
                 Paths.get(Paths.get("").toAbsolutePath().toString(), dotenv.get("STATIC_DIR")).normalize().toString());
 
-        get("/public-key", (request, response) -> {
-            response.type("application/json");
-            JsonObject publicKey = new JsonObject();
-            publicKey.addProperty("publicKey", dotenv.get("STRIPE_PUBLISHABLE_KEY"));
-            return publicKey.toString();
-        });
-
         post("/create-setup-intent", (request, response) -> {
             response.type("application/json");
 
@@ -58,7 +51,10 @@ public class Server {
                 .build();
             SetupIntent setupIntent = SetupIntent.create(params);
 
-            return gson.toJson(setupIntent);
+            JsonObject json = new JsonObject();
+            json.addProperty("publishableKey", dotenv.get("STRIPE_PUBLISHABLE_KEY"));
+            json.addProperty("clientSecret", setupIntent.getClientSecret());
+            return json;
         });
 
         post("/webhook", (request, response) -> {

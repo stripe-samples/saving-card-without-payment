@@ -32,13 +32,6 @@ $app->get('/', function (Request $request, Response $response, array $args) {
   return $response->write(file_get_contents(getenv('STATIC_DIR') . '/index.html'));
 });
 
-$app->get('/public-key', function (Request $request, Response $response, array $args) {
-  $pub_key = getenv('STRIPE_PUBLISHABLE_KEY');
-  
-  // Send publishable key details to client
-  return $response->withJson(array('publicKey' => $pub_key));
-});
-
 $app->post('/create-setup-intent', function (Request $request, Response $response, array $args) {  
     // Create or use an existing Customer to associate with the SetupIntent.
     // The PaymentMethod will be stored to this Customer for later use.
@@ -47,8 +40,11 @@ $app->post('/create-setup-intent', function (Request $request, Response $respons
     $setupIntent = \Stripe\SetupIntent::create([
       'customer' => $customer->id
     ]);
-    // Send Setup Intent details to client
-    return $response->withJson($setupIntent);
+    $pub_key = getenv('STRIPE_PUBLISHABLE_KEY');
+
+    // Send publishable key, Setup Intent details to client
+    return $response->withJson(array('publishableKey' => $pub_key, 'clientSecret' => $setupIntent->client_secret));
+    // return $response->withJson($setupIntent);
 });
 
 

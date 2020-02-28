@@ -1,5 +1,5 @@
-var stripeElements = function(publicKey, setupIntent) {
-  var stripe = Stripe(publicKey);
+var stripeElements = function(publishableKey, clientSecret) {
+  var stripe = Stripe(publishableKey);
   var elements = stripe.elements();
 
   // Element styles
@@ -39,7 +39,7 @@ var stripeElements = function(publicKey, setupIntent) {
     var email = document.getElementById("email").value;
 
     stripe
-      .confirmCardSetup(setupIntent.client_secret, {
+      .confirmCardSetup(clientSecret, {
         payment_method: {
           card: card,
           billing_details: { email: email }
@@ -52,13 +52,13 @@ var stripeElements = function(publicKey, setupIntent) {
           displayError.textContent = result.error.message;
         } else {
           // The PaymentMethod was successfully set up
-          orderComplete(stripe, setupIntent.client_secret);
+          orderComplete(stripe, clientSecret);
         }
       });
   });
 };
 
-var getSetupIntent = function(publicKey) {
+var getSetupIntent = function() {
   return fetch("/create-setup-intent", {
     method: "post",
     headers: {
@@ -68,23 +68,8 @@ var getSetupIntent = function(publicKey) {
     .then(function(response) {
       return response.json();
     })
-    .then(function(setupIntent) {
-      stripeElements(publicKey, setupIntent);
-    });
-};
-
-var getPublicKey = function() {
-  return fetch("/public-key", {
-    method: "get",
-    headers: {
-      "Content-Type": "application/json"
-    }
-  })
     .then(function(response) {
-      return response.json();
-    })
-    .then(function(response) {
-      getSetupIntent(response.publicKey);
+      stripeElements(response.publishableKey, response.clientSecret);
     });
 };
 
@@ -118,4 +103,4 @@ var orderComplete = function(stripe, clientSecret) {
   });
 };
 
-getPublicKey();
+getSetupIntent();

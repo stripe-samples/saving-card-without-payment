@@ -28,18 +28,18 @@ app.get("/", (req, res) => {
   res.sendFile(path);
 });
 
-app.get("/public-key", (req, res) => {
-  res.send({ publicKey: process.env.STRIPE_PUBLISHABLE_KEY });
-});
-
 app.post("/create-setup-intent", async (req, res) => {
   // Create or use an existing Customer to associate with the SetupIntent.
   // The PaymentMethod will be stored to this Customer for later use.
   const customer = await stripe.customers.create();
-
-  res.send(await stripe.setupIntents.create({
+  const setupIntent = await stripe.setupIntents.create({
     customer: customer.id
-  }));
+  });
+
+  res.send({
+    clientSecret: setupIntent.client_secret,
+    publishableKey: process.env.STRIPE_PUBLISHABLE_KEY
+  });
 });
 
 // Webhook handler for asynchronous events.

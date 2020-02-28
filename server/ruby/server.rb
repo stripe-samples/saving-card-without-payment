@@ -16,23 +16,19 @@ get '/' do
   send_file File.join(settings.public_folder, 'index.html')
 end
 
-get '/public-key' do
-  content_type 'application/json'
-
-  {
-    'publicKey': ENV['STRIPE_PUBLISHABLE_KEY']
-  }.to_json
-end
-
 post '/create-setup-intent' do
   content_type 'application/json'
 
   customer = Stripe::Customer.create
 
-  data = Stripe::SetupIntent.create(
+  setup_intent = Stripe::SetupIntent.create(
     customer: customer['id']
   )
-  data.to_json
+
+  {
+    'publishableKey': ENV['STRIPE_PUBLISHABLE_KEY'],
+    'clientSecret': setup_intent.client_secret
+  }.to_json
 end
 
 post '/webhook' do
