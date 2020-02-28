@@ -4,7 +4,7 @@
   "integrations": [
     {
       "name": "main",
-      "clients": ["web"],
+      "clients": ["web", "android", "ios"],
       "servers": ["java", "node", "php", "python", "ruby"]
     }
   ]

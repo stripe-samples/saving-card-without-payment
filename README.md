@@ -86,6 +86,16 @@ You should see events logged in the console where the CLI is running.
 
 When you are ready to create a live webhook endpoint, follow our guide in the docs on [configuring a webhook endpoint in the dashboard](https://stripe.com/docs/webhooks/setup#configure-webhook-settings). 
 
+**4. [Mobile clients] Set up the client app:**
+
+Finally, choose a mobile client implementation and follow the instruction in the app's README (e.g. `using-webhooks/client/ios/README.md`) to run.
+
+When the app is running, use `4242424242424242` as a test card number with any CVC code + a future expiration date.
+
+Use the `4000000000003220` test card number to trigger a 3D Secure challenge flow.
+
+Read more about testing on Stripe at https://stripe.com/docs/testing.
+
 ### Supported languages
 
 - [JavaScript (Node)](/server/node)
