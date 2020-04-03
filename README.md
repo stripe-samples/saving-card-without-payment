@@ -1,7 +1,7 @@
 # Saving cards without payment sample
 
 This sample shows how to build a form to save a credit card without taking a payment using the [Setup Intents API](https://stripe.com/docs/api/setup_intents). This sample
-is a fully working version of [this guide](https://stripe.com/docs/payments/cards/saving-cards#saving-card-without-payment).
+is a fully working version of [this guide](https://stripe.com/docs/payments/save-and-reuse).
 
 **Demo**
 
