@@ -20,7 +20,8 @@ import com.stripe.model.SetupIntent;
 import com.stripe.exception.*;
 import com.stripe.net.ApiResource;
 import com.stripe.net.Webhook;
-import com.stripe.param.CustomerCreateParams;
+import com.stripe.param.SetupIntentCreateParams;
+import com.stripe.param.CustomerUpdateParams;
 import com.stripe.model.EventDataObjectDeserializer;
 
 import io.github.cdimascio.dotenv.Dotenv;
@@ -47,7 +48,14 @@ public class Server {
         post("/create-setup-intent", (request, response) -> {
             response.type("application/json");
 
-            Map<String, Object> params = new HashMap<>();
+            // Create or use an existing Customer to associate with the SetupIntent.
+            // The PaymentMethod will be stored to this Customer for later use.
+            Customer customer = Customer
+                    .create(new CustomerCreateParams.Builder().build());
+
+            SetupIntentCreateParams params = new SetupIntentCreateParams.Builder()
+                .setCustomer(customer.getId())
+                .build();
             SetupIntent setupIntent = SetupIntent.create(params);
 
             return gson.toJson(setupIntent);
@@ -68,33 +76,34 @@ public class Server {
                 return "";
             }
 
+            EventDataObjectDeserializer deserializer = event.getDataObjectDeserializer();
+
             switch (event.getType()) {
             case "setup_intent.created":
                 System.out.println("🔔 A new SetupIntent was created.");
                 break;
             case "setup_intent.succeeded":
-                EventDataObjectDeserializer deserializer = event.getDataObjectDeserializer();
-                SetupIntent intent = ApiResource.GSON.fromJson(deserializer.getRawJson(), SetupIntent.class);
-                System.out.println("🔔 A SetupIntent has successfully setup a PaymentMethod.");
-
-                // Get Customer billing details from the PaymentMethod
-                PaymentMethod paymentMethod = PaymentMethod.retrieve(intent.getPaymentMethod());
-
-                // Create a Customer to store the PaymentMethod ID for later use
-                Customer customer = Customer
-                        .create(new CustomerCreateParams.Builder().setPaymentMethod(intent.getPaymentMethod())
-                                .setEmail(paymentMethod.getBillingDetails().getEmail()).build());
+                System.out.println("🔔 A SetupIntent has successfully set up a PaymentMethod.");
+                break;
+            case "setup_intent.setup_failed":
+                System.out.println("🔔 A SetupIntent has failed the attempt to set up a PaymentMethod.");
+                break;
+            case "payment_method.attached":
+                PaymentMethod paymentMethod = ApiResource.GSON.fromJson(deserializer.getRawJson(), PaymentMethod.class);
 
                 // At this point, associate the ID of the Customer object with your
                 // own internal representation of a customer, if you have one.
-                
-                System.out.println("🔔 A Customer has successfully been created.");
+                Customer customer = Customer.retrieve(paymentMethod.getCustomer());
 
-                // You can also attach a PaymentMethod to an existing Customer
-                // https://stripe.com/docs/api/payment_methods/attach
-                break;
-            case "setup_intent.setup_failed":
-                System.out.println("🔔 A SetupIntent has failed the attempt to setup a PaymentMethod.");
+                System.out.println("🔔 A PaymentMethod has successfully been saved to a Customer.");
+
+                // Optional: update the Customer billing information with billing details from the PaymentMethod
+                CustomerUpdateParams params = new CustomerUpdateParams.Builder()
+                .setEmail(paymentMethod.getBillingDetails().getEmail())
+                .build();
+
+                customer.update(params);
+                System.out.println("🔔 Customer successfully updated.");
                 break;
             default:
                 // Unexpected event type

@@ -40,7 +40,13 @@ $app->get('/public-key', function (Request $request, Response $response, array $
 });
 
 $app->post('/create-setup-intent', function (Request $request, Response $response, array $args) {  
-    $setupIntent = \Stripe\SetupIntent::create();
+    // Create or use an existing Customer to associate with the SetupIntent.
+    // The PaymentMethod will be stored to this Customer for later use.
+    $customer = \Stripe\Customer::create();  
+
+    $setupIntent = \Stripe\SetupIntent::create([
+      'customer' => $customer->id
+    ]);
     // Send Setup Intent details to client
     return $response->withJson($setupIntent);
 });
@@ -68,31 +74,30 @@ $app->post('/webhook', function(Request $request, Response $response) {
     $object = $event['data']['object'];
     
     if ($type == 'setup_intent.created') {
-      $logger->info('A new SetupIntent was created. ');
+      $logger->info('🔔 A new SetupIntent was created. ');
     }
 
     if ($type == 'setup_intent.succeeded') {
-      $logger->info('A SetupIntent has successfully setup a PaymentMethod for future use.');
+      $logger->info('🔔 A SetupIntent has successfully set up a PaymentMethod for future use.'); 
+    }
 
-      // Get Customer billing details from the PaymentMethod
-      $payment_method = \Stripe\PaymentMethod::retrieve($object->payment_method);
-
-      // Create a Customer to store the PaymentMethod ID for later use
-      $customer = \Stripe\Customer::create([
-        "payment_method" => $object->payment_method,
-        'email' => $payment_method->billing_details->email
-      ]);    
+    if ($type == 'payment_method.attached') {
+      $logger->info('🔔 A PaymentMethod has successfully been saved to a Customer.');
 
       // At this point, associate the ID of the Customer object with your
       // own internal representation of a customer, if you have one. 
-      $logger->info('A Customer has successfully been created.');
 
-      // You can also attach a PaymentMethod to an existing Customer
-      // https://stripe.com/docs/api/payment_methods/attach
+      // Optional: update the Customer billing information with billing details from the PaymentMethod
+      $customer = \Stripe\Customer::update(
+        $object->customer,
+        ['email' => $object->billing_details->email]
+      );
+
+      $logger->info('🔔 Customer successfully updated.');
     }
 
-    if ($type == 'setup_intent.failed') {
-      $logger->info('A SetupIntent has failed the attempt to setup a PaymentMethod.');
+    if ($type == 'setup_intent.setup_failed') {
+      $logger->info('🔔 A SetupIntent has failed the attempt to set up a PaymentMethod.');
     }
 
     return $response->withJson([ 'status' => 'success' ])->withStatus(200);

@@ -27,7 +27,11 @@ end
 post '/create-setup-intent' do
   content_type 'application/json'
 
-  data = Stripe::SetupIntent.create
+  customer = Stripe::Customer.create
+
+  data = Stripe::SetupIntent.create(
+    customer: customer['id']
+  )
   data.to_json
 end
 
@@ -64,31 +68,34 @@ post '/webhook' do
   data = event['data']
   data_object = data['object']
 
+  if event_type == 'setup_intent.created'
+    puts '🔔 A new SetupIntent was created.'
+  end
+
   if event_type == 'setup_intent.setup_failed'
-    puts '🔔  A SetupIntent has failed the attempt to setup a PaymentMethod.'
+    puts '🔔  A SetupIntent has failed the attempt to set up a PaymentMethod.'
   end
 
   if event_type == 'setup_intent.succeeded'
-    puts '🔔 A SetupIntent has successfully setup a PaymentMethod for future use.'
-    
-    # Get Customer billing details from the PaymentMethod
-    payment_method = Stripe::PaymentMethod.retrieve(data_object['payment_method'])
+    puts '🔔 A SetupIntent has successfully set up a PaymentMethod for future use.'
+  end
 
-    # This creates a new Customer and attaches the PaymentMethod in one API call.
-    customer = Stripe::Customer.create(
-      payment_method: data_object['payment_method'], 
-      email: payment_method['billing_details']['email'])
+  if event_type == 'payment_method.attached'
+    puts '🔔 A PaymentMethod has successfully been saved to a Customer.'
 
     # At this point, associate the ID of the Customer object with your
     # own internal representation of a customer, if you have one.
-    puts '🔔 A Customer has successfully been created.'
+
+    # Optional: update the Customer billing information with billing details from the PaymentMethod
+    customer = Stripe::Customer.update(
+      data_object['customer'],
+      email: data_object['billing_details']['email']
+    )
+
+    puts "🔔 Customer #{customer['id']} successfully updated."
 
     # You can also attach a PaymentMethod to an existing Customer
     # https://stripe.com/docs/api/payment_methods/attach
-  end
-
-  if event_type == 'setup_intent.created'
-    puts '🔔 A new SetupIntent was created.'
   end
 
   content_type 'application/json'
