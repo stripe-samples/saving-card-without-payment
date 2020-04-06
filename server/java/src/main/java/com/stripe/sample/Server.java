@@ -21,7 +21,7 @@ import com.stripe.exception.*;
 import com.stripe.net.ApiResource;
 import com.stripe.net.Webhook;
 import com.stripe.param.SetupIntentCreateParams;
-import com.stripe.param.CustomerCreateParams;
+import com.stripe.param.CustomerUpdateParams;
 import com.stripe.model.EventDataObjectDeserializer;
 
 import io.github.cdimascio.dotenv.Dotenv;
@@ -98,11 +98,12 @@ public class Server {
                 System.out.println("🔔 A PaymentMethod has successfully been saved to a Customer.");
 
                 // Optional: update the Customer billing information with billing details from the PaymentMethod
-                Map<String, Object> params = new HashMap<>();
-                params.put("email", paymentMethod.getBillingDetails().getEmail());
+                CustomerUpdateParams params = new CustomerUpdateParams.Builder()
+                .setEmail(paymentMethod.getBillingDetails().getEmail())
+                .build();
+
                 customer.update(params);
                 System.out.println("🔔 Customer successfully updated.");
-
                 break;
             default:
                 // Unexpected event type
