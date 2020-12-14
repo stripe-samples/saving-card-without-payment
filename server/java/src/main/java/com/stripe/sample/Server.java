@@ -21,6 +21,7 @@ import com.stripe.exception.*;
 import com.stripe.net.ApiResource;
 import com.stripe.net.Webhook;
 import com.stripe.param.SetupIntentCreateParams;
+import com.stripe.param.CustomerCreateParams;
 import com.stripe.param.CustomerUpdateParams;
 import com.stripe.model.EventDataObjectDeserializer;
 
