@@ -17,13 +17,13 @@ Read more about test cards on Stripe at https://stripe.com/docs/testing.
 
 ## How to run locally
 
-This sample includes 5 server implementations in Node, Ruby, Python, Java, and PHP. 
+This sample includes 5 server implementations in Node, Ruby, Python, Java, and PHP.
 
 Follow the steps below to run locally.
 
 **1. Clone and configure the sample**
 
-The Stripe CLI is the fastest way to clone and configure a sample to run locally. 
+The Stripe CLI is the fastest way to clone and configure a sample to run locally.
 
 **Using the Stripe CLI**
 
@@ -60,6 +60,11 @@ STRIPE_SECRET_KEY=<replace-with-your-secret-key>
 
 `STATIC_DIR` tells the server where to the client files are located and does not need to be modified unless you move the server files.
 
+Note: If you install the sample with the Stripe CLI using `stripe samples
+create saving-card-without-payment` then the path to the directory with static
+files will be `../client` if you install the sample by git cloning the entire
+repository this will be set to `../../client`.
+
 **2. Follow the server instructions on how to run:**
 
 Pick the server language you want and follow the instructions in the server folder README on how to run.
@@ -84,7 +89,7 @@ The CLI will print a webhook secret key to the console. Set `STRIPE_WEBHOOK_SECR
 
 You should see events logged in the console where the CLI is running.
 
-When you are ready to create a live webhook endpoint, follow our guide in the docs on [configuring a webhook endpoint in the dashboard](https://stripe.com/docs/webhooks/setup#configure-webhook-settings). 
+When you are ready to create a live webhook endpoint, follow our guide in the docs on [configuring a webhook endpoint in the dashboard](https://stripe.com/docs/webhooks/setup#configure-webhook-settings).
 
 ### Supported languages
 
