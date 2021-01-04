@@ -1,10 +1,12 @@
 require 'stripe'
 require 'sinatra'
 require 'dotenv'
+require './config_helper.rb'
 
 # Copy the .env.example in the root into a .env file in this folder
 
 Dotenv.load
+ConfigHelper.check_env!
 Stripe.api_key = ENV['STRIPE_SECRET_KEY']
 
 set :static, true
