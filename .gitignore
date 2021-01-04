@@ -23,3 +23,7 @@ target/
 .classpath
 .factorypath
 .project
+
+# Dotnet files
+bin/
+obj/
