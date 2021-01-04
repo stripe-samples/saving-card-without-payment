@@ -17,6 +17,10 @@ RSpec.describe "full integration path" do
 
     after_customer_id = Stripe::Customer.list(limit: 1).data.first.id
     expect(before_customer_id).not_to eq(after_customer_id)
-    expect(resp["customer"]).to eq(after_customer_id)
+    if resp["customer"].is_a?(String)
+      expect(resp["customer"]).to eq(after_customer_id)
+    else # for java, we serialize the nested object with it's ID rather than returning polymorphic field.
+      expect(resp["customer"]["id"]).to eq(after_customer_id)
+    end
   end
 end
