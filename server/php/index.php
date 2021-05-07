@@ -23,26 +23,32 @@ $container['logger'] = function ($c) {
 };
 
 $app->add(function ($request, $response, $next) {
+    // For sample support and debugging. Not required for production:
+    Stripe::setAppInfo(
+      "stripe-samples/saving-card-without-payment",
+      "0.0.1",
+      "https://github.com/stripe-samples/saving-card-without-payment"
+    );
     Stripe::setApiKey(getenv('STRIPE_SECRET_KEY'));
     return $next($request, $response);
 });
 
-$app->get('/', function (Request $request, Response $response, array $args) {   
+$app->get('/', function (Request $request, Response $response, array $args) {
   // Display checkout page
   return $response->write(file_get_contents(getenv('STATIC_DIR') . '/index.html'));
 });
 
 $app->get('/public-key', function (Request $request, Response $response, array $args) {
   $pub_key = getenv('STRIPE_PUBLISHABLE_KEY');
-  
+
   // Send publishable key details to client
   return $response->withJson(array('publicKey' => $pub_key));
 });
 
-$app->post('/create-setup-intent', function (Request $request, Response $response, array $args) {  
+$app->post('/create-setup-intent', function (Request $request, Response $response, array $args) {
     // Create or use an existing Customer to associate with the SetupIntent.
     // The PaymentMethod will be stored to this Customer for later use.
-    $customer = \Stripe\Customer::create();  
+    $customer = \Stripe\Customer::create();
 
     $setupIntent = \Stripe\SetupIntent::create([
       'customer' => $customer->id
@@ -72,20 +78,20 @@ $app->post('/webhook', function(Request $request, Response $response) {
     }
     $type = $event['type'];
     $object = $event['data']['object'];
-    
+
     if ($type == 'setup_intent.created') {
       $logger->info('🔔 A new SetupIntent was created. ');
     }
 
     if ($type == 'setup_intent.succeeded') {
-      $logger->info('🔔 A SetupIntent has successfully set up a PaymentMethod for future use.'); 
+      $logger->info('🔔 A SetupIntent has successfully set up a PaymentMethod for future use.');
     }
 
     if ($type == 'payment_method.attached') {
       $logger->info('🔔 A PaymentMethod has successfully been saved to a Customer.');
 
       // At this point, associate the ID of the Customer object with your
-      // own internal representation of a customer, if you have one. 
+      // own internal representation of a customer, if you have one.
 
       // Optional: update the Customer billing information with billing details from the PaymentMethod
       $customer = \Stripe\Customer::update(

@@ -3,7 +3,15 @@ const app = express();
 const { resolve } = require("path");
 // Copy the .env.example in the root into a .env file in this folder
 const env = require("dotenv").config({ path: "./.env" });
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY, {
+  apiVersion: '2020-08-27',
+  appInfo: { // For sample support and debugging, not required for production:
+    name: "stripe-samples/saving-card-without-payment",
+    version: "0.0.1",
+    url: "https://github.com/stripe-samples/saving-card-without-payment"
+  }
+});
 
 try {
   app.use(express.static(process.env.STATIC_DIR));
@@ -98,7 +106,7 @@ app.post("/webhook", async (req, res) => {
     // Optional: update the Customer billing information with billing details from the PaymentMethod
     const customer = await stripe.customers.update(
       data.object.customer,
-      {email: data.object.billing_details.email}, 
+      {email: data.object.billing_details.email},
       () => {
         console.log(
           `🔔  Customer successfully updated.`

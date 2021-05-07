@@ -7,6 +7,13 @@ require './config_helper.rb'
 
 Dotenv.load
 ConfigHelper.check_env!
+# For sample support and debugging, not required for production:
+Stripe.set_app_info(
+  'stripe-samples/saving-card-without-payment',
+  version: '0.0.1',
+  url: 'https://github.com/stripe-samples/saving-card-without-payment'
+)
+Stripe.api_version = '2020-08-27'
 Stripe.api_key = ENV['STRIPE_SECRET_KEY']
 
 set :static, true

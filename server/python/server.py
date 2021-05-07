@@ -15,8 +15,14 @@ from dotenv import load_dotenv, find_dotenv
 
 # Setup Stripe python client library
 load_dotenv(find_dotenv())
+# For sample support and debugging, not required for production:
+stripe.set_app_info(
+    'stripe-samples/saving-card-without-payment',
+    version='0.0.1',
+    url='https://github.com/stripe-samples/saving-card-without-payment')
+
+stripe.api_version = '2020-08-27'
 stripe.api_key = os.getenv('STRIPE_SECRET_KEY')
-stripe.api_version = os.getenv('STRIPE_API_VERSION')
 
 static_dir = str(os.path.abspath(os.path.join(
     __file__, "..", os.getenv("STATIC_DIR"))))
@@ -75,7 +81,7 @@ def webhook_received():
     if event_type == 'setup_intent.succeeded':
         print(
             '🔔 A SetupIntent has successfully set up a PaymentMethod for future use.')
-    
+
     if event_type == 'payment_method.attached':
         print('🔔 A PaymentMethod has successfully been saved to a Customer.')
 

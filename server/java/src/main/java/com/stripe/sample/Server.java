@@ -34,6 +34,12 @@ public class Server {
         port(4242);
         Dotenv dotenv = Dotenv.load();
 
+        // For sample support and debugging, not required for production:
+        Stripe.setAppInfo(
+            "stripe-samples/saving-card-without-payment",
+            "0.0.1",
+            "https://github.com/stripe-samples/saving-card-without-payment"
+        );
         Stripe.apiKey = dotenv.get("STRIPE_SECRET_KEY");
 
         staticFiles.externalLocation(
