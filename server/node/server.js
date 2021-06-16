@@ -50,6 +50,40 @@ app.post("/create-setup-intent", async (req, res) => {
   }));
 });
 
+app.get("/subscription", async (req, res) => {
+  const subscription = await stripe.subscriptions.create({
+    customer: 'cus_JgFku3nI9PDFfp',
+    items: [
+      {
+        price_data: {
+          currency: 'USD',
+          product: 'prod_JgG2BkTcKcvzTV',
+          recurring: {
+            interval: 'month',
+          },
+          unit_amount_decimal: 12300,
+        },
+      },
+    ],
+    "off_session": true,
+  });
+  console.log(subscription);
+  res.send(JSON.stringify(subscription));
+});
+
+app.get("/payment_intent", async (req, res) => {
+  const paymentIntent = await stripe.paymentIntents.create({
+    amount: 11100,
+    currency: "usd",
+    payment_method: 'pm_1J2tFnBudkfFZ9hrkIjNy6a7',
+    customer: 'cus_JgFku3nI9PDFfp',
+    off_session: true,
+    confirm: true
+  });
+  console.log(paymentIntent);
+  res.send(JSON.stringify(paymentIntent));
+});
+
 // Webhook handler for asynchronous events.
 app.post("/webhook", async (req, res) => {
   let data;
