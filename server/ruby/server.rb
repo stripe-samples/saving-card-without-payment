@@ -33,6 +33,14 @@ get '/public-key' do
   }.to_json
 end
 
+get '/stripe-key' do
+  content_type 'application/json'
+  # Send publishable key to client
+  {
+    publicKey: ENV['STRIPE_PUBLISHABLE_KEY']
+  }.to_json
+end
+
 post '/create-setup-intent' do
   content_type 'application/json'
 
