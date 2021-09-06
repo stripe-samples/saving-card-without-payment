@@ -25,19 +25,11 @@ get '/' do
   send_file File.join(settings.public_folder, 'index.html')
 end
 
-get '/public-key' do
+get '/stripe-key' do
   content_type 'application/json'
 
   {
     'publicKey': ENV['STRIPE_PUBLISHABLE_KEY']
-  }.to_json
-end
-
-get '/stripe-key' do
-  content_type 'application/json'
-  # Send publishable key to client
-  {
-    publicKey: ENV['STRIPE_PUBLISHABLE_KEY']
   }.to_json
 end
 
