@@ -5,7 +5,7 @@ var stripeElements = function(publicKey, setupIntent) {
   // Element styles
   var style = {
     base: {
-      fontSize: "16px",
+      fontSize: "15px",
       color: "#32325d",
       fontFamily:
         "-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, sans-serif",
